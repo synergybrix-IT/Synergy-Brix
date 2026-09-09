@@ -70,7 +70,7 @@ export const navItems: NavItem[] = [
   },
   { label: 'Solutions', to: '/solutions' },
   { label: 'Work', to: '/work' },
-  { label: 'About', to: '/#about' },
+  { label: 'About', to: '/about' },
 ]
 
 export const services: Service[] = [
@@ -331,7 +331,7 @@ export const footerLinks = {
     { label: 'Solutions', to: '/solutions' },
     { label: 'Industries', to: '/industries' },
     { label: 'Projects', to: '/#projects' },
-    { label: 'About Synergy Brix', to: '/#about' },
+    { label: 'About Synergy Brix', to: '/about' },
     { label: 'Contact Synergy Brix', to: '/#contact' },
     // { label: 'Privacy Policy', to: '/privacy' },
     // { label: 'Terms & Conditions', to: '/terms' },
