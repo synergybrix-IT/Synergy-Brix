@@ -529,7 +529,7 @@ function HomeJsonLd() {
         },
         description:
           'Synergy Brix is a technology and software development company building custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.',
-        sameAs: ['https://www.linkedin.com', 'https://www.instagram.com/synergy.brix'],
+        sameAs: ['https://www.linkedin.com/in/synergy-brix-721726433/', 'https://www.instagram.com/synergy.brix'],
       },
       {
         '@type': 'WebSite',
@@ -1694,7 +1694,7 @@ function ContactPage() {
           <motion.div variants={fadeIn} className="mt-12 grid gap-3 sm:grid-cols-2">
             <ContactInfoCard icon={<Mail size={16} />} label="Email" value="synergy.brix@gmail.com" href="mailto:synergy.brix@gmail.com" />
             <ContactInfoCard icon={<MapPin size={16} />} label="Location" value="India • Remote-ready" />
-            <ContactInfoCard icon={<FaLinkedinIn size={14} />} label="LinkedIn" value="Connect on LinkedIn" href="https://www.linkedin.com" />
+            <ContactInfoCard icon={<FaLinkedinIn size={14} />} label="LinkedIn" value="Connect on LinkedIn" href="https://www.linkedin.com/in/synergy-brix-721726433/" />
             <ContactInfoCard icon={<FaInstagram size={14} />} label="Instagram" value="Follow on Instagram" href="https://www.instagram.com/synergy.brix" />
           </motion.div>
         </motion.div>
