@@ -34,6 +34,9 @@ export type CaseStudy = {
   slug: string
   title: string
   label: string
+  categoryBadge?: string
+  liveUrl?: string
+  displayUrl?: string
   overview: string
   challenge: string
   approach: string
@@ -41,6 +44,8 @@ export type CaseStudy = {
   technology: string[]
   architecture: string
   outcome: string
+  tags?: string[]
+  feedback?: string
 }
 
 export type BlogPost = {
@@ -174,28 +179,38 @@ export const industries: Industry[] = [
 
 export const caseStudies: CaseStudy[] = [
   {
-    slug: 'operations-visibility-platform',
-    title: 'Operations Visibility Platform',
-    label: 'Selected Demonstration Project',
-    overview: 'A modular dashboard system designed to unify reporting across sales, inventory, and service operations.',
-    challenge: 'The client had fragmented operational data across spreadsheets, manual reporting, and multiple tools.',
-    approach: 'We mapped the reporting flows and created a single business intelligence layer with role-based views.',
-    solution: 'The platform brought together operational data, surfaced the key metrics, and improved team visibility across departments.',
-    technology: ['React', 'TypeScript', 'REST APIs', 'PostgreSQL', 'Dashboard Design'],
-    architecture: 'Frontend in React with a service-oriented API layer and a database design focused on reporting and access control.',
-    outcome: 'Project structure and solution direction were defined for scalable rollout once real business data and workflows are available.',
+    slug: 'ssezi-returns',
+    title: 'SSEZI Returns',
+    label: 'Featured Project',
+    categoryBadge: 'Logistics & Transportation',
+    liveUrl: 'https://www.ssezireturns.com/',
+    displayUrl: 'ssezireturns.com',
+    overview: 'Designed and developed a modern digital platform for SSEZI Returns, a logistics and transportation business focused on customer returns, reverse pickups, fulfillment, distribution, and logistics solutions.',
+    challenge: 'Managing reverse logistics, return pickups, and B2B vendor inquiries required a unified, authoritative digital presence that clearly explains multi-step pickup and inspection workflows.',
+    approach: 'We mapped customer return cycles and fulfillment touchpoints, designing a streamlined interface that clarifies shipment tracking, operational capabilities, and contact points.',
+    solution: 'A high-performance responsive web platform with intuitive service navigation, transparent workflow overviews, and direct enquiry pipelines for enterprise shippers.',
+    technology: ['Next.js', 'React', 'Tailwind CSS', 'TypeScript', 'Responsive Design'],
+    architecture: 'Modern server-rendered frontend with optimized asset delivery, accessible component architecture, and responsive layouts.',
+    outcome: 'Gave SSEZI Returns an enterprise-grade digital storefront that simplifies customer intake and boosts partner confidence.',
+    tags: ['Website Development', 'Responsive Design'],
+    feedback: '“The website gives SSEZI Returns a much more professional digital presence and makes it easier for our customers to understand our services and get in touch with us.”',
   },
   {
-    slug: 'process-automation-suite',
-    title: 'Process Automation Suite',
-    label: 'Selected Demonstration Project',
-    overview: 'An automation-focused platform for repetitive operational steps across multiple departments.',
-    challenge: 'The business needed to reduce manual work and improve consistency across approvals and notifications.',
-    approach: 'We defined the workflows, triggers, and routing logic, then packaged them into a structured automation design.',
-    solution: 'The solution model simplified repetitive work, centralized task approvals, and improved operational speed.',
-    technology: ['Java', 'Spring Boot', 'REST APIs', 'Workflow Design', 'Notifications'],
-    architecture: 'A modular backend process engine with event triggers, service integrations, and a simple reporting interface.',
-    outcome: 'The project demonstrates how business automation can be designed around measurable operational improvements and future extensibility.',
+    slug: 'pratik-wellness',
+    title: 'Pratik • Wellness Coach',
+    label: 'Featured Project',
+    categoryBadge: 'Health & Wellness',
+    liveUrl: 'https://chipper-kangaroo-c51158.netlify.app/',
+    displayUrl: 'chipper-kangaroo-c51158.netlify.app',
+    overview: 'Designed and developed a modern wellness and lifestyle platform for Pratik, an Independent Herbalife Wellness Coach featuring personalized nutrition coaching, daily habit architecture, and 1-on-1 client support.',
+    challenge: 'Conveying a calm, credible, and personalized coaching philosophy while organizing diverse offerings—nutrition plans, habit building, and community support—into an approachable client experience.',
+    approach: 'Designed an editorial-style interface with earthy tones, clear program breakdowns, and interactive goal paths that inspire confidence and guide visitors toward booking consultations.',
+    solution: 'An elegant, content-rich web experience with structured wellness offerings, transparent coaching principles, client stories, and immediate conversion funnels.',
+    technology: ['Next.js', 'React', 'Tailwind CSS', 'TypeScript', 'Editorial Typography'],
+    architecture: 'Component-driven frontend optimized for smooth performance, mobile-first readability, and fast interactive touchpoints.',
+    outcome: 'Equipped the coach with a signature digital space that educates prospective clients and significantly streamlines consultation bookings.',
+    tags: ['Website Development', 'Responsive Design'],
+    feedback: '“The platform gives my wellness coaching a calm, credible digital identity. Clients can easily understand my personalized approach and get in touch seamlessly.”',
   },
 ]
 
