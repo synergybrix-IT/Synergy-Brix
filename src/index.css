@@ -532,8 +532,8 @@ img {
   border-radius: 28px;
   background: linear-gradient(165deg, rgba(13, 17, 23, 0.92), rgba(6, 10, 14, 0.98));
   box-shadow:
-    0 50px 100px -30px rgba(0, 0, 0, 0.7),
-    inset 0 1px rgba(255, 255, 255, 0.06);
+     0 50px 100px -30px rgba(0, 0, 0, 0.7),
+     inset 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .architecture-grid {

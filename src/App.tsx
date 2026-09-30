@@ -22,6 +22,8 @@ import {
   Plus,
   Minus,
   Building2,
+  Quote,
+  ExternalLink,
 } from 'lucide-react'
 import { FaLinkedinIn, FaInstagram } from 'react-icons/fa'
 import {
@@ -530,7 +532,7 @@ function HomeJsonLd() {
         },
         description:
           'Synergy Brix is a technology and software development company building custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.',
-        sameAs: ['https://www.linkedin.com', 'https://www.instagram.com/synergy.brix'],
+        sameAs: ['https://www.linkedin.com/in/synergy-brix-721726433/', 'https://www.instagram.com/synergy.brix'],
       },
       {
         '@type': 'WebSite',
@@ -570,6 +572,7 @@ function HomePage() {
       <ProblemsSection />
       <SolutionsBento />
       <IndustriesSection />
+      <ProjectsSection />
       <HowWeWork />
       <TechnologyStack />
       <AboutValuesSection />
@@ -1099,6 +1102,166 @@ function IndustriesSection() {
   )
 }
 
+/* ----- Projects (home showcase) ----- */
+
+function ProjectsSection() {
+  const [activeIdx, setActiveIdx] = useState(0)
+  const active = caseStudies[activeIdx]
+
+  return (
+    <section id="projects" className="relative overflow-hidden bg-ink-950 py-24 lg:py-32">
+      <div className="dotted-grid pointer-events-none absolute inset-0 opacity-30" />
+      <div className="pointer-events-none absolute -right-40 bottom-1/4 h-96 w-96 rounded-full bg-emerald-500/8 blur-[140px]" />
+      <Container className="relative">
+        {/* Header */}
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <SectionIndex index="06" label="Our Work" />
+            <h2 className="mt-6 max-w-xl text-4xl font-semibold tracking-tightest text-white sm:text-5xl lg:text-6xl">
+              Built for <span className="font-serif-display italic text-emerald-200/90">real businesses.</span>
+            </h2>
+            <p className="mt-4 max-w-lg text-base leading-7 text-slate-400">
+              A selection of client work designed to create a clearer, more confident digital presence.
+            </p>
+          </div>
+          <LinkButton href="/work" variant="secondary" icon={<ArrowUpRight size={15} />}>
+            All projects
+          </LinkButton>
+        </div>
+
+        {/* Tab selectors */}
+        <div className="mt-10 flex flex-wrap gap-3">
+          {caseStudies.map((p, i) => (
+            <button
+              key={p.slug}
+              type="button"
+              onClick={() => setActiveIdx(i)}
+              data-cursor="hover"
+              className={`rounded-full border px-4 py-1.5 text-xs font-medium tracking-wide transition-all duration-300 ${
+                i === activeIdx
+                  ? 'border-emerald-400/60 bg-emerald-500/12 text-emerald-300'
+                  : 'border-white/10 bg-white/3 text-slate-400 hover:border-white/20 hover:text-slate-200'
+              }`}
+            >
+              {p.title}
+            </button>
+          ))}
+        </div>
+
+        {/* Main panel */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active.slug}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 grid gap-0 overflow-hidden rounded-2xl border border-white/8 bg-ink-900 lg:grid-cols-[1fr_0.9fr]"
+          >
+            {/* Left — browser mockup */}
+            <div className="relative flex flex-col overflow-hidden border-b border-white/8 lg:border-b-0 lg:border-r">
+              {/* Browser chrome bar */}
+              <div className="flex items-center gap-2 border-b border-white/8 bg-ink-800 px-4 py-2.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-rose-500/70" />
+                <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />
+                <div className="ml-2 flex flex-1 items-center gap-2 rounded-md border border-white/10 bg-ink-950 px-3 py-1">
+                  <Globe2 size={10} className="shrink-0 text-slate-500" />
+                  <span className="truncate font-mono text-[0.6rem] text-slate-500">{active.displayUrl ?? active.liveUrl}</span>
+                </div>
+              </div>
+              {/* Iframe embed */}
+              <div className="relative h-72 w-full overflow-hidden sm:h-80 lg:h-[420px]">
+                {active.liveUrl ? (
+                  <iframe
+                    src={active.liveUrl}
+                    title={active.title}
+                    className="pointer-events-none h-[150%] w-[150%] origin-top-left scale-[0.667] border-0"
+                    loading="lazy"
+                    sandbox="allow-scripts allow-same-origin"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-slate-600 text-sm">Preview unavailable</div>
+                )}
+                {/* gradient fade bottom */}
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-ink-900 to-transparent" />
+              </div>
+            </div>
+
+            {/* Right — project details */}
+            <div className="flex flex-col justify-between gap-6 p-7 lg:p-9">
+              {/* Badges */}
+              <div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-emerald-300">
+                    {active.label}
+                  </span>
+                  {active.categoryBadge && (
+                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate-400">
+                      {active.categoryBadge}
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="mt-4 text-2xl font-semibold tracking-tightest text-white sm:text-3xl">
+                  {active.title}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-slate-400">{active.overview}</p>
+
+                {/* Tags */}
+                {active.tags && active.tags.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {active.tags.map((tag) => (
+                      <span key={tag} className="rounded-full border border-white/10 bg-white/3 px-3 py-1 text-xs text-slate-300">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* CTAs */}
+                <div className="mt-6 flex flex-wrap items-center gap-4">
+                  {active.liveUrl && (
+                    <a
+                      href={active.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-cursor="hover"
+                      className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-2 text-xs font-semibold text-white transition hover:bg-emerald-400"
+                    >
+                      View Live Website <ExternalLink size={12} />
+                    </a>
+                  )}
+                  <Link
+                    to={`/work/${active.slug}`}
+                    data-cursor="hover"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-300 transition hover:text-white"
+                  >
+                    View case study <ArrowRight size={13} className="arrow-shift" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Client feedback */}
+              {active.feedback && (
+                <div className="rounded-xl border border-emerald-400/15 bg-emerald-500/5 p-5">
+                  <div className="mb-3 flex items-center gap-2">
+                    <Quote size={13} className="text-emerald-400" />
+                    <span className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-emerald-300/80">
+                      Client Feedback
+                    </span>
+                  </div>
+                  <p className="text-sm italic leading-6 text-slate-300">{active.feedback}</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </Container>
+    </section>
+  )
+}
+
 /* ----- About values (editorial list) ----- */
 
 function AboutValuesSection() {
@@ -1109,7 +1272,7 @@ function AboutValuesSection() {
       <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.5fr]">
           <div>
-            <SectionIndex index="07" label="About Synergy Brix" />
+            <SectionIndex index="08" label="About Synergy Brix" />
             <h2 className="mt-6 text-4xl font-semibold tracking-tightest text-white sm:text-5xl">
               Structured for <span className="font-serif-display italic text-emerald-200/90">long-term</span> value.
             </h2>
@@ -1157,7 +1320,7 @@ function FAQPreview() {
       <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.5fr]">
           <div>
-            <SectionIndex index="08" label="FAQ" />
+            <SectionIndex index="09" label="FAQ" />
             <h2 className="mt-6 text-4xl font-semibold tracking-tightest text-white sm:text-5xl">
               Questions, <span className="font-serif-display italic text-emerald-200/90">answered.</span>
             </h2>
@@ -1497,8 +1660,8 @@ function WorkPage() {
         title={
           <>Selected <span className="font-serif-display italic text-emerald-200/90">work.</span></>
         }
-        subtitle="Selected project concepts and reusable case-study structures."
-        description="We present demonstration-ready work placeholders so real case studies can be added later with clear context and verified detail."
+        subtitle="Real client projects designed to create impactful digital experiences."
+        description="Two live websites built for real businesses — from logistics platforms to wellness coaching brands."
       />
       <Container className="pb-24 lg:pb-32">
         <div>
@@ -1563,6 +1726,18 @@ function CaseStudyPage() {
             <SectionColumn title="Technology" body={item.technology.join(', ')} />
             <SectionColumn title="Architecture" body={item.architecture} />
             <SectionColumn title="Outcome" body={item.outcome} />
+            {item.liveUrl && (
+              <div className="mt-6">
+                <a
+                  href={item.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-2 text-xs font-semibold text-white transition hover:bg-emerald-400"
+                >
+                  View Live Website <ExternalLink size={12} />
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </Container>
@@ -1753,7 +1928,7 @@ function ContactPage() {
           <motion.div variants={fadeIn} className="mt-12 grid gap-3 sm:grid-cols-2">
             <ContactInfoCard icon={<Mail size={16} />} label="Email" value="synergy.brix@gmail.com" href="mailto:synergy.brix@gmail.com" />
             <ContactInfoCard icon={<MapPin size={16} />} label="Location" value="India • Remote-ready" />
-            <ContactInfoCard icon={<FaLinkedinIn size={14} />} label="LinkedIn" value="Connect on LinkedIn" href="https://www.linkedin.com" />
+            <ContactInfoCard icon={<FaLinkedinIn size={14} />} label="LinkedIn" value="Connect on LinkedIn" href="https://www.linkedin.com/in/synergy-brix-721726433/" />
             <ContactInfoCard icon={<FaInstagram size={14} />} label="Instagram" value="Follow on Instagram" href="https://www.instagram.com/synergy.brix" />
           </motion.div>
         </motion.div>
@@ -2231,36 +2406,8 @@ function LinkButton({
       </a>
     )
   }
-
-  const isHashLink = href.startsWith('/#') || href.startsWith('#')
-  const sectionId = isHashLink ? href.replace(/^\/?#/, '') : null
-
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
-    if (!isHashLink || !sectionId) return
-    e.preventDefault()
-
-    if (window.location.pathname !== '/') {
-      window.location.assign(`/#${sectionId}`)
-      return
-    }
-
-    const target = document.getElementById(sectionId)
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      window.history.replaceState(null, '', `/#${sectionId}`)
-      return
-    }
-
-    window.location.assign(`/#${sectionId}`)
-  }
-
   return (
-    <Link
-      to={href}
-      onClick={handleClick}
-      data-cursor="hover"
-      className={`btn-base ${variantClass} ${fullWidth ? 'w-full' : ''} ${className}`}
-    >
+    <Link to={href} data-cursor="hover" className={`btn-base ${variantClass} ${fullWidth ? 'w-full' : ''} ${className}`}>
       {inner}
     </Link>
   )
