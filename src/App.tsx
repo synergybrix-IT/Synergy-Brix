@@ -1176,7 +1176,7 @@ function ProjectsSection() {
                   <iframe
                     src={active.liveUrl}
                     title={active.title}
-                    className="pointer-events-none h-[150%] w-[150%] origin-top-left scale-[0.667] border-0"
+                    className="h-[150%] w-[150%] origin-top-left scale-[0.667] border-0"
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   />
