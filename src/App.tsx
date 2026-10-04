@@ -41,6 +41,8 @@ import {
   solutions,
 } from './data/siteData'
 import { SITE_URL } from './config/siteUrl'
+import { SpeedInsights } from '@vercel/speed-insights/react'
+import { Analytics } from '@vercel/analytics/react'
 import { usePageMeta } from './hooks/usePageMeta'
 import {
   PointerParallax,
@@ -100,6 +102,8 @@ function AppShell() {
   return (
     <>
       <Cursor />
+      <SpeedInsights />
+      <Analytics />
       <Preloader />
       <ScrollProgress />
       <Navbar />
