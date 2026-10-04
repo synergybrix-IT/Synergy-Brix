@@ -275,7 +275,7 @@ function Navbar() {
                       role="menu"
                     >
                       <Link
-                        to="/#services"
+                        to="/services"
                         onClick={() => setIsServicesOpen(false)}
                         className="mb-1 flex items-center justify-between rounded-xl border border-emerald-400/20 bg-emerald-500/8 px-3 py-2.5 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/14"
                         role="menuitem"
@@ -299,10 +299,15 @@ function Navbar() {
                   )}
                 </div>
               ) : (
-                <button
+                <Link
                   key={item.id}
-                  type="button"
-                  onClick={() => goToSection(item.id)}
+                  to={item.to}
+                  onClick={(e) => {
+                    if (item.to.startsWith('/#')) {
+                      e.preventDefault()
+                      goToSection(item.id)
+                    }
+                  }}
                   data-cursor="hover"
                   className={`nav-underline text-[0.85rem] font-medium transition-colors ${location.pathname === '/' && activeSection === item.id
                     ? 'text-emerald-300'
@@ -317,7 +322,7 @@ function Navbar() {
                   }
                 >
                   {item.label}
-                </button>
+                </Link>
               ),
             )}
           </nav>
@@ -379,14 +384,21 @@ function Navbar() {
                       show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
                     }}
                   >
-                    <button
-                      type="button"
-                      onClick={() => goToSection(item.id)}
+                    <Link
+                      to={item.to}
+                      onClick={(e) => {
+                        if (item.to.startsWith('/#')) {
+                          e.preventDefault()
+                          goToSection(item.id)
+                        } else {
+                          setIsOpen(false)
+                        }
+                      }}
                       className="flex w-full items-end justify-between border-b border-white/6 py-5 text-left"
                     >
                       <span className="text-3xl font-semibold tracking-tightest text-white">{item.label}</span>
                       <ArrowUpRight className="text-slate-500" />
-                    </button>
+                    </Link>
                   </motion.div>
                 ))}
               </motion.nav>
@@ -841,7 +853,7 @@ function ServicesSpotlight() {
               Focused software capabilities for businesses that need reliable, scalable, and well-engineered digital systems.
             </p>
           </div>
-          <LinkButton href="/#services" variant="secondary" icon={<ArrowUpRight size={15} />}>
+          <LinkButton href="/services" variant="secondary" icon={<ArrowUpRight size={15} />}>
             All services
           </LinkButton>
         </div>
@@ -909,7 +921,9 @@ function ServicesSpotlight() {
                     </div>
                     <div>
                       <h3 className={`text-2xl font-semibold tracking-tightest sm:text-3xl ${isActive ? 'text-white' : 'text-slate-200'}`}>
-                        {service.title}
+                        <Link to={`/services/${service.slug}`} className="hover:text-emerald-300 transition-colors">
+                          {service.title}
+                        </Link>
                       </h3>
                       <p className="mt-2 max-w-lg text-sm leading-7 text-slate-400">{service.short}</p>
                       {isActive && (
@@ -1507,9 +1521,10 @@ function ServiceDetailPage() {
   const service = services.find((item) => item.slug === slug)
 
   usePageMeta({
-    title: service ? `${service.title} | Synergy Brix` : 'Page Not Found | Synergy Brix',
+    title: service ? `${service.title} Services | Synergy Brix` : 'Page Not Found | Synergy Brix',
     description: service ? service.short : 'The page you requested could not be found.',
     canonical: service ? `${SITE_URL}/services/${service.slug}` : `${SITE_URL}/404`,
+    robots: service ? 'index, follow' : 'noindex, nofollow',
   })
 
   if (!service) return <NotFoundPage />
@@ -1520,7 +1535,7 @@ function ServiceDetailPage() {
         eyebrow={`Service · ${slug}`}
         title={service.title}
         subtitle={service.short}
-        breadcrumbs={[{ label: 'Services', to: '/#services' }, { label: service.title }]}
+        breadcrumbs={[{ label: 'Services', to: '/services' }, { label: service.title }]}
       />
       <Container className="pb-24 lg:pb-32">
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
@@ -1604,6 +1619,18 @@ function SolutionsPage() {
                   <p className="mt-2 text-sm leading-6 text-slate-400">{solution.approach}</p>
                 </div>
               </div>
+              {solution.relatedServiceSlug && (
+                <div className="mt-6 flex items-center justify-between border-t border-white/6 pt-4">
+                  <span className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-slate-500">Related service</span>
+                  <Link
+                    to={`/services/${solution.relatedServiceSlug}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-300 transition hover:text-emerald-200"
+                  >
+                    {solution.relatedServiceTitle}
+                    <ArrowRight size={12} className="arrow-shift" />
+                  </Link>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
@@ -1704,9 +1731,11 @@ function CaseStudyPage() {
   const { slug } = useParams()
   const item = caseStudies.find((entry) => entry.slug === slug)
   usePageMeta({
-    title: item ? `${item.title} | Synergy Brix` : 'Not Found | Synergy Brix',
+    title: item ? `${item.title} Case Study | Synergy Brix` : 'Not Found | Synergy Brix',
     description: item ? item.overview : 'The page you requested does not exist or may have moved.',
     canonical: item ? `${SITE_URL}/work/${item.slug}` : `${SITE_URL}/404`,
+    robots: item ? 'index, follow' : 'noindex, nofollow',
+    ogType: 'article',
   })
   if (!item) return <NotFoundPage />
 
@@ -1874,9 +1903,11 @@ function InsightDetailPage() {
   const { slug } = useParams()
   const post = blogPosts.find((item) => item.slug === slug)
   usePageMeta({
-    title: post ? `${post.title} | Synergy Brix` : 'Page Not Found | Synergy Brix',
+    title: post ? `${post.title} | Synergy Brix Insights` : 'Page Not Found | Synergy Brix',
     description: post ? post.excerpt : 'The insight you are looking for could not be found.',
     canonical: post ? `${SITE_URL}/insights/${post.slug}` : `${SITE_URL}/404`,
+    robots: post ? 'index, follow' : 'noindex, nofollow',
+    ogType: 'article',
   })
   if (!post) return <NotFoundPage />
   return (
@@ -1889,11 +1920,28 @@ function InsightDetailPage() {
       />
       <Container className="pb-24 lg:pb-32">
         <article className="mx-auto max-w-3xl glass-panel rounded-3xl p-8 sm:p-12">
-          <p className="text-sm leading-8 text-slate-300 sm:text-lg sm:leading-9">
+          <div className="space-y-6 text-sm leading-8 text-slate-300 sm:text-lg sm:leading-9">
             {post.content.map((paragraph) => (
-              <span key={paragraph} className="block">{paragraph}</span>
+              <p key={paragraph}>{paragraph}</p>
             ))}
-          </p>
+          </div>
+
+          {post.relatedServiceSlug && post.relatedServiceTitle && (
+            <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center">
+              <div>
+                <span className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-emerald-300/80">Related Capability</span>
+                <h4 className="mt-1 text-base font-semibold text-white">{post.relatedServiceTitle}</h4>
+                <p className="mt-0.5 text-xs text-slate-400">Discover how Synergy Brix approaches {post.relatedServiceTitle.toLowerCase()}.</p>
+              </div>
+              <Link
+                to={`/services/${post.relatedServiceSlug}`}
+                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-xs font-medium text-emerald-300 transition hover:bg-emerald-500/20 hover:text-emerald-200"
+              >
+                Explore {post.relatedServiceTitle}
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+          )}
         </article>
       </Container>
     </div>

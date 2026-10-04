@@ -1,6 +1,6 @@
-import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import type { Plugin, PreviewServer, ViteDevServer } from 'vite'
+import { prerenderAllRoutes } from './prerender.ts'
 import { buildRobotsTxt, buildSitemapXml } from './sitemap.ts'
 
 function attachSeoRoutes(server: ViteDevServer | PreviewServer) {
@@ -29,12 +29,10 @@ export function seoFilesPlugin(): Plugin {
     configurePreviewServer(server) {
       attachSeoRoutes(server)
     },
-    writeBundle(options) {
-      if (!options.dir) return
-      const sitemap = buildSitemapXml()
-      const robots = buildRobotsTxt()
-      writeFileSync(resolve(options.dir, 'sitemap.xml'), sitemap)
-      writeFileSync(resolve(options.dir, 'robots.txt'), robots)
+    closeBundle() {
+      const distDir = resolve(process.cwd(), 'dist')
+      const publicDir = resolve(process.cwd(), 'public')
+      prerenderAllRoutes(distDir, publicDir)
     },
   }
 }
