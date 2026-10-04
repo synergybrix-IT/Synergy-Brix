@@ -1,62 +1,94 @@
 import { useEffect } from 'react'
+import { SITE_URL } from '../config/siteUrl'
+
+export interface PageMetaOptions {
+  title: string
+  description: string
+  canonical: string
+  robots?: string
+  ogType?: 'website' | 'article'
+  ogImage?: string
+  twitterCard?: 'summary' | 'summary_large_image'
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>
+}
 
 export function usePageMeta({
   title,
   description,
   canonical,
   robots = 'index, follow',
-}: {
-  title: string
-  description: string
-  canonical: string
-  robots?: string
-}) {
+  ogType = 'website',
+  ogImage = `${SITE_URL}/logo.png`,
+  twitterCard = 'summary_large_image',
+  jsonLd,
+}: PageMetaOptions) {
   useEffect(() => {
+    // 1. Page Title
     document.title = title
 
-    const metaDescription = document.querySelector('meta[name="description"]') ?? document.createElement('meta')
-    metaDescription.setAttribute('name', 'description')
-    metaDescription.setAttribute('content', description)
-    if (!metaDescription.parentNode) document.head.appendChild(metaDescription)
+    // Helper for unique meta tag management
+    const setMetaTag = (selectorKey: string, selectorVal: string, content: string) => {
+      const existing = Array.from(document.querySelectorAll(`meta[${selectorKey}="${selectorVal}"]`))
+      if (existing.length > 0) {
+        existing[0].setAttribute('content', content)
+        for (let i = 1; i < existing.length; i++) {
+          existing[i].remove()
+        }
+      } else {
+        const meta = document.createElement('meta')
+        meta.setAttribute(selectorKey, selectorVal)
+        meta.setAttribute('content', content)
+        document.head.appendChild(meta)
+      }
+    }
 
-    const canonicalTag = document.querySelector('link[rel="canonical"]') ?? document.createElement('link')
-    canonicalTag.setAttribute('rel', 'canonical')
-    canonicalTag.setAttribute('href', canonical)
-    if (!canonicalTag.parentNode) document.head.appendChild(canonicalTag)
+    // 2. Meta description
+    setMetaTag('name', 'description', description)
 
-    const ogTitle = document.querySelector('meta[property="og:title"]') ?? document.createElement('meta')
-    ogTitle.setAttribute('property', 'og:title')
-    ogTitle.setAttribute('content', title)
-    if (!ogTitle.parentNode) document.head.appendChild(ogTitle)
+    // 3. Canonical Tag (Strictly Single)
+    const canonicalTags = Array.from(document.querySelectorAll('link[rel="canonical"]'))
+    if (canonicalTags.length > 0) {
+      canonicalTags[0].setAttribute('href', canonical)
+      for (let i = 1; i < canonicalTags.length; i++) {
+        canonicalTags[i].remove()
+      }
+    } else {
+      const canonicalTag = document.createElement('link')
+      canonicalTag.setAttribute('rel', 'canonical')
+      canonicalTag.setAttribute('href', canonical)
+      document.head.appendChild(canonicalTag)
+    }
 
-    const ogDescription = document.querySelector('meta[property="og:description"]') ?? document.createElement('meta')
-    ogDescription.setAttribute('property', 'og:description')
-    ogDescription.setAttribute('content', description)
-    if (!ogDescription.parentNode) document.head.appendChild(ogDescription)
+    // 4. Open Graph Tags
+    setMetaTag('property', 'og:title', title)
+    setMetaTag('property', 'og:description', description)
+    setMetaTag('property', 'og:url', canonical)
+    setMetaTag('property', 'og:type', ogType)
+    setMetaTag('property', 'og:image', ogImage)
+    setMetaTag('property', 'og:site_name', 'Synergy Brix')
 
-    const ogUrl = document.querySelector('meta[property="og:url"]') ?? document.createElement('meta')
-    ogUrl.setAttribute('property', 'og:url')
-    ogUrl.setAttribute('content', canonical)
-    if (!ogUrl.parentNode) document.head.appendChild(ogUrl)
+    // 5. Twitter Card Tags
+    setMetaTag('name', 'twitter:card', twitterCard)
+    setMetaTag('name', 'twitter:title', title)
+    setMetaTag('name', 'twitter:description', description)
+    setMetaTag('name', 'twitter:image', ogImage)
 
-    const twitterTitle = document.querySelector('meta[name="twitter:title"]') ?? document.createElement('meta')
-    twitterTitle.setAttribute('name', 'twitter:title')
-    twitterTitle.setAttribute('content', title)
-    if (!twitterTitle.parentNode) document.head.appendChild(twitterTitle)
+    // 6. Robots Tag
+    setMetaTag('name', 'robots', robots)
 
-    const twitterDescription = document.querySelector('meta[name="twitter:description"]') ?? document.createElement('meta')
-    twitterDescription.setAttribute('name', 'twitter:description')
-    twitterDescription.setAttribute('content', description)
-    if (!twitterDescription.parentNode) document.head.appendChild(twitterDescription)
-
-    const twitterCard = document.querySelector('meta[name="twitter:card"]') ?? document.createElement('meta')
-    twitterCard.setAttribute('name', 'twitter:card')
-    twitterCard.setAttribute('content', 'summary_large_image')
-    if (!twitterCard.parentNode) document.head.appendChild(twitterCard)
-
-    const robotsTag = document.querySelector('meta[name="robots"]') ?? document.createElement('meta')
-    robotsTag.setAttribute('name', 'robots')
-    robotsTag.setAttribute('content', robots)
-    if (!robotsTag.parentNode) document.head.appendChild(robotsTag)
-  }, [title, description, canonical, robots])
+    // 7. Dynamic JSON-LD Structured Data
+    if (jsonLd) {
+      let scriptTag = document.querySelector('script[data-page-jsonld="true"]')
+      if (!scriptTag) {
+        scriptTag = document.createElement('script')
+        scriptTag.setAttribute('type', 'application/ld+json')
+        scriptTag.setAttribute('data-page-jsonld', 'true')
+        document.head.appendChild(scriptTag)
+      }
+      scriptTag.textContent = JSON.stringify(jsonLd)
+    } else {
+      const existingScript = document.querySelector('script[data-page-jsonld="true"]')
+      if (existingScript) existingScript.remove()
+    }
+  }, [title, description, canonical, robots, ogType, ogImage, twitterCard, jsonLd])
 }

@@ -23,6 +23,8 @@ export type Solution = {
   summary: string
   problem: string
   approach: string
+  relatedServiceSlug?: string
+  relatedServiceTitle?: string
 }
 
 export type Industry = {
@@ -56,6 +58,8 @@ export type BlogPost = {
   readTime: string
   date: string
   content: string[]
+  relatedServiceSlug?: string
+  relatedServiceTitle?: string
 }
 
 export const navItems: NavItem[] = [
@@ -99,7 +103,6 @@ export const services: Service[] = [
     technology: ['React', 'TypeScript', 'HTML', 'CSS', 'REST APIs'],
     cta: 'Plan a web app',
   },
-
   {
     slug: 'business-automation',
     title: 'Business Automation',
@@ -153,16 +156,96 @@ export const services: Service[] = [
 ]
 
 export const solutions: Solution[] = [
-  { slug: 'business-management', title: 'Business Management', summary: 'Operational workflows that unify teams, processes, and visibility.', problem: 'Business teams often work across disconnected spreadsheets, forms, and legacy tools.', approach: 'We map core workflows and build an intelligent system around them with role-based controls and reporting.' },
-  { slug: 'crm', title: 'CRM', summary: 'Customer relationship tools that bring pipeline, communication, and follow-up together.', problem: 'Without a common record of customer activity, teams lose context and momentum.', approach: 'We design structured customer records, lead tracking, and process automation around your sales and service model.' },
-  { slug: 'inventory-management', title: 'Inventory Management', summary: 'Accurate stock oversight with demand visibility and process control.', problem: 'Inventory errors create lost sales, delays, and inaccurate financial reporting.', approach: 'We implement inventory workflows, stock monitoring, movement tracking, and reporting that support operational clarity.' },
-  { slug: 'employee-management', title: 'Employee Management', summary: 'People and operations data centralized for better planning and visibility.', problem: 'HR and operational data often remain fragmented across multiple systems.', approach: 'We build systems to manage employee information, onboarding, attendance, and role-based access with consistency.' },
-  { slug: 'customer-portals', title: 'Customer Portals', summary: 'Self-serve access that improves service delivery and data visibility.', problem: 'Customers need fast access to information without unnecessary internal overhead.', approach: 'We build secure portals for requests, updates, tracking, and document access tailored to your service model.' },
-  { slug: 'workflow-automation', title: 'Workflow Automation', summary: 'Automated business processes that remove repetitive manual work.', problem: 'Manual steps between systems create delays, errors, and staff burnout.', approach: 'We automate tasks, alerts, approvals, and handoffs across systems to improve speed and quality.' },
-  { slug: 'analytics-reporting', title: 'Analytics & Reporting', summary: 'Sensible business reporting built to support smarter decisions.', problem: 'Reporting is often inconsistent, delayed, or hidden inside manual spreadsheets.', approach: 'We create metrics dashboards and reporting flows that make performance visible and actionable.' },
-  { slug: 'document-management', title: 'Document Management', summary: 'Organized digital records and document workflows with governance in mind.', problem: 'Critical information becomes difficult to track, review, and retrieve.', approach: 'We structure document repositories, version control, access policies, and process automation around your compliance needs.' },
-  { slug: 'scheduling', title: 'Scheduling', summary: 'Operational scheduling systems that reduce overlaps and improve planning.', problem: 'Teams lose time to scheduling conflicts and inconsistent coordination.', approach: 'We create scheduling solutions with resource planning, calendars, and automation tailored to your operational patterns.' },
-  { slug: 'internal-tools', title: 'Internal Tools', summary: 'Practical internal systems that improve team speed and accountability.', problem: 'Simple operational tasks often rely on brittle spreadsheets or disconnected tools.', approach: 'We build purpose-built internal tools that reflect the way your team really works and remove administrative drain.' },
+  {
+    slug: 'business-management',
+    title: 'Business Management',
+    summary: 'Operational workflows that unify teams, processes, and visibility.',
+    problem: 'Business teams often work across disconnected spreadsheets, forms, and legacy tools.',
+    approach: 'We map core workflows and build an intelligent system around them with role-based controls and reporting.',
+    relatedServiceSlug: 'custom-software-development',
+    relatedServiceTitle: 'Custom Software Development',
+  },
+  {
+    slug: 'crm',
+    title: 'CRM',
+    summary: 'Customer relationship tools that bring pipeline, communication, and follow-up together.',
+    problem: 'Without a common record of customer activity, teams lose context and momentum.',
+    approach: 'We design structured customer records, lead tracking, and process automation around your sales and service model.',
+    relatedServiceSlug: 'custom-software-development',
+    relatedServiceTitle: 'Custom Software Development',
+  },
+  {
+    slug: 'inventory-management',
+    title: 'Inventory Management',
+    summary: 'Accurate stock oversight with demand visibility and process control.',
+    problem: 'Inventory errors create lost sales, delays, and inaccurate financial reporting.',
+    approach: 'We implement inventory workflows, stock monitoring, movement tracking, and reporting that support operational clarity.',
+    relatedServiceSlug: 'database-solutions',
+    relatedServiceTitle: 'Database Solutions',
+  },
+  {
+    slug: 'employee-management',
+    title: 'Employee Management',
+    summary: 'People and operations data centralized for better planning and visibility.',
+    problem: 'HR and operational data often remain fragmented across multiple systems.',
+    approach: 'We build systems to manage employee information, onboarding, attendance, and role-based access with consistency.',
+    relatedServiceSlug: 'web-development',
+    relatedServiceTitle: 'Web Application Development',
+  },
+  {
+    slug: 'customer-portals',
+    title: 'Customer Portals',
+    summary: 'Self-serve access that improves service delivery and data visibility.',
+    problem: 'Customers need fast access to information without unnecessary internal overhead.',
+    approach: 'We build secure portals for requests, updates, tracking, and document access tailored to your service model.',
+    relatedServiceSlug: 'web-development',
+    relatedServiceTitle: 'Web Application Development',
+  },
+  {
+    slug: 'workflow-automation',
+    title: 'Workflow Automation',
+    summary: 'Automated business processes that remove repetitive manual work.',
+    problem: 'Manual steps between systems create delays, errors, and staff burnout.',
+    approach: 'We automate tasks, alerts, approvals, and handoffs across systems to improve speed and quality.',
+    relatedServiceSlug: 'business-automation',
+    relatedServiceTitle: 'Business Automation',
+  },
+  {
+    slug: 'analytics-reporting',
+    title: 'Analytics & Reporting',
+    summary: 'Sensible business reporting built to support smarter decisions.',
+    problem: 'Reporting is often inconsistent, delayed, or hidden inside manual spreadsheets.',
+    approach: 'We create metrics dashboards and reporting flows that make performance visible and actionable.',
+    relatedServiceSlug: 'dashboard-development',
+    relatedServiceTitle: 'Dashboard Development',
+  },
+  {
+    slug: 'document-management',
+    title: 'Document Management',
+    summary: 'Organized digital records and document workflows with governance in mind.',
+    problem: 'Critical information becomes difficult to track, review, and retrieve.',
+    approach: 'We structure document repositories, version control, access policies, and process automation around your compliance needs.',
+    relatedServiceSlug: 'database-solutions',
+    relatedServiceTitle: 'Database Solutions',
+  },
+  {
+    slug: 'scheduling',
+    title: 'Scheduling',
+    summary: 'Operational scheduling systems that reduce overlaps and improve planning.',
+    problem: 'Teams lose time to scheduling conflicts and inconsistent coordination.',
+    approach: 'We create scheduling solutions with resource planning, calendars, and automation tailored to your operational patterns.',
+    relatedServiceSlug: 'business-automation',
+    relatedServiceTitle: 'Business Automation',
+  },
+  {
+    slug: 'internal-tools',
+    title: 'Internal Tools',
+    summary: 'Practical internal systems that improve team speed and accountability.',
+    problem: 'Simple operational tasks often rely on brittle spreadsheets or disconnected tools.',
+    approach: 'We build purpose-built internal tools that reflect the way your team really works and remove administrative drain.',
+    relatedServiceSlug: 'custom-software-development',
+    relatedServiceTitle: 'Custom Software Development',
+  },
 ]
 
 export const industries: Industry[] = [
@@ -227,6 +310,8 @@ export const blogPosts: BlogPost[] = [
       'This is especially important when businesses are dealing with fragmented systems, manual handoffs, or informal processes that only work because people are carrying them mentally. The right engineering approach is to map those realities first and then build digital systems around them.',
       'When the process is clear, the technology becomes easier to design, more reliable to implement, and more valuable to the business long term.',
     ],
+    relatedServiceSlug: 'custom-software-development',
+    relatedServiceTitle: 'Custom Software Development',
   },
   {
     slug: 'what-makes-an-api-reliable',
@@ -240,6 +325,8 @@ export const blogPosts: BlogPost[] = [
       'Security, observability, and maintainability are not afterthoughts. They are part of a strong API design strategy from the beginning.',
       'When organizations connect internal and external systems through well-designed interfaces, they reduce complexity and improve flexibility for future product growth.',
     ],
+    relatedServiceSlug: 'web-development',
+    relatedServiceTitle: 'Web Application Development',
   },
   {
     slug: 'when-dashboards-drive-better-decisions',
@@ -249,54 +336,12 @@ export const blogPosts: BlogPost[] = [
     readTime: '4 min read',
     date: 'April 2026',
     content: [
-      'Dashboards are only useful when they support real decision-making. If data is noisy or difficult to interpret, a dashboard becomes a burden rather than an advantage.',
-      'Business-critical dashboards should focus on the most meaningful metrics, use clear grouping, and align with the needs of each decision-maker.',
-      'When the information is organized around actual business questions, dashboards become a practical tool for operational clarity and speed.',
+      'A dashboard should not be a dump of every available metric. Its purpose is to help teams understand what is happening quickly and take practical action without cognitive overload.',
+      'Effective dashboards focus on actionable metrics, clear visual hierarchy, role-specific contexts, and automated reporting triggers.',
+      'When organizations replace scattered spreadsheets with focused dashboards, decision speed and operational awareness improve noticeably.',
     ],
-  },
-]
-
-export const faqs = [
-  { question: 'What types of software do you build?', answer: 'We build custom software, web applications, APIs, automation systems, dashboards, internal tools, integration layers, and digital platforms for business operations.' },
-  { question: 'How does your development process work?', answer: 'Our process begins with discovery and requirement analysis, then planning, architecture, design, development, testing, deployment, and support.' },
-  { question: 'How long does a project take?', answer: 'Project duration varies depending on scope, complexity, integrations, and business requirements. We define a realistic timeline during the discovery and planning stages.' },
-  { question: 'Do you work with startups and SMEs?', answer: 'Yes. We work with organizations that need scalable, well-structured technology without unnecessary complexity or rigid delivery models.' },
-  { question: 'Can you work with existing software?', answer: 'Yes. We can review, improve, extend, or integrate with existing systems when the business needs a practical modernization path.' },
-  { question: 'Can you integrate APIs?', answer: 'Yes. We design and implement API-driven integrations to connect systems, automate workflows, and improve data exchange.' },
-  { question: 'Can you automate existing business processes?', answer: 'Yes. We map operational processes and automate repetitive or manual steps when the business case is clear and the workflow can be standardized.' },
-  { question: 'Do you provide cloud deployment?', answer: 'Yes. We can plan and support cloud-ready deployment strategies, containerized setups, and scalable hosting approaches based on project needs.' },
-  { question: 'Can you maintain existing applications?', answer: 'Yes. We provide maintenance and support services to improve stability, address issues, and extend functionality over time.' },
-  { question: 'How do project estimates work?', answer: 'Estimates are based on the project scope, business goals, technical complexity, integrations, timeline, and any support requirements after launch.' },
-]
-
-export const technologyGroups = [
-  {
-    title: 'Frontend',
-    items: ['React', 'TypeScript', 'HTML', 'CSS', 'JavaScript'],
-  },
-  {
-    title: 'Backend',
-    items: ['Java', 'Spring Boot', 'REST APIs'],
-  },
-  {
-    title: 'Databases',
-    items: ['PostgreSQL', 'MySQL'],
-  },
-  {
-    title: 'APIs',
-    items: ['REST API Design', 'API Integration', 'System Connectivity'],
-  },
-  {
-    title: 'Security',
-    items: ['Authentication', 'Authorization', 'JWT', 'Role-Based Access Control'],
-  },
-  {
-    title: 'Cloud',
-    items: ['Docker', 'Cloud Deployment', 'CI/CD-ready architecture'],
-  },
-  {
-    title: 'DevOps',
-    items: ['Version Control', 'Environment readiness', 'Deployment support', 'Monitoring preparation'],
+    relatedServiceSlug: 'dashboard-development',
+    relatedServiceTitle: 'Dashboard Development',
   },
 ]
 
@@ -340,16 +385,41 @@ export const homeProblems = [
   { question: 'Need better visibility?', answer: 'We can build dashboards and reporting systems.' },
 ]
 
+export const faqs = [
+  {
+    question: 'What types of software solutions do you build?',
+    answer:
+      'We design and develop custom web applications, internal tools, ERP modules, CRM solutions, inventory systems, APIs and integrations, SaaS platforms, and automated workflow solutions for growing businesses.',
+  },
+  {
+    question: 'How do you handle integrations with our existing tools?',
+    answer:
+      'We design secure REST APIs, webhooks, and database synchronization pipelines that connect your existing third-party platforms, ERPs, databases, and operational software seamlessly.',
+  },
+  {
+    question: 'What is your typical project process and timeline?',
+    answer:
+      'We follow a structured 6-step lifecycle: Discover, Plan, Design, Develop, Test, and Deploy. Timelines typically range from 2–4 weeks for focused tools to 8–12 weeks for complex custom platforms.',
+  },
+  {
+    question: 'Do you provide ongoing support after launch?',
+    answer:
+      'Yes. We offer maintenance, monitoring, security updates, feature enhancements, and cloud infrastructure support to ensure long-term stability and performance.',
+  },
+]
+
 export const footerLinks = {
   quickLinks: [
-    { label: 'Synergy Brix Services', to: '/#services' },
-    { label: 'Solutions', to: '/solutions' },
-    { label: 'Industries', to: '/industries' },
-    { label: 'Projects', to: '/#projects' },
+    { label: 'All Services', to: '/services' },
+    { label: 'Business Solutions', to: '/solutions' },
+    { label: 'Client Work', to: '/work' },
+    { label: 'Industry Expertise', to: '/industries' },
+    { label: 'Development Process', to: '/process' },
+    { label: 'Technology Stack', to: '/technologies' },
+    { label: 'Insights & Articles', to: '/insights' },
     { label: 'About Synergy Brix', to: '/about' },
-    { label: 'Contact Synergy Brix', to: '/#contact' },
-    // { label: 'Privacy Policy', to: '/privacy' },
-    // { label: 'Terms & Conditions', to: '/terms' },
+    { label: 'FAQ', to: '/faq' },
+    { label: 'Contact Us', to: '/contact' },
   ],
   social: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/synergy-brix-721726433/' },
@@ -361,69 +431,82 @@ export const footerLinks = {
 export const pageMeta = {
   home: {
     title: 'Synergy Brix | Software Development & Technology Solutions',
-    description: 'Synergy Brix is a technology and software development company building custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.',
+    description:
+      'Synergy Brix is a technology and software development company building custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.',
     canonical: `${SITE_URL}/`,
   },
   about: {
     title: 'About Synergy Brix | Technology Partner for Modern Business',
-    description: 'Learn about Synergy Brix and how we work as a technology partner focused on business-first engineering and practical digital transformation.',
+    description:
+      'Learn about Synergy Brix, our founding team, and how we build business-first software, automation, and scalable digital systems for growing companies.',
     canonical: `${SITE_URL}/about`,
   },
   services: {
-    title: 'Services | Synergy Brix',
-    description: 'Discover Synergy Brix services including custom software, web apps, APIs, automation, dashboards, SaaS, cloud, and database solutions.',
+    title: 'Software Development & Technology Services | Synergy Brix',
+    description:
+      'Discover Synergy Brix services including custom software development, web applications, APIs, business automation, dashboards, SaaS platforms, cloud architecture, and databases.',
     canonical: `${SITE_URL}/services`,
   },
   solutions: {
-    title: 'Solutions | Synergy Brix',
-    description: 'Explore business solutions from Synergy Brix for operations, CRM, inventory, customer portals, automation, reporting, and internal tools.',
+    title: 'Business Solutions & Digital Systems | Synergy Brix',
+    description:
+      'Explore business solutions from Synergy Brix for operations, CRM, inventory, customer portals, automation, reporting, and internal tools.',
     canonical: `${SITE_URL}/solutions`,
   },
   industries: {
-    title: 'Industries | Synergy Brix',
-    description: 'See how Synergy Brix supports manufacturing, engineering, healthcare, education, logistics, retail, services, real estate, and startups.',
+    title: 'Industry Solutions & Technology Support | Synergy Brix',
+    description:
+      'See how Synergy Brix supports manufacturing, engineering, healthcare, education, logistics, retail, services, real estate, and startups.',
     canonical: `${SITE_URL}/industries`,
   },
   work: {
-    title: 'Work | Synergy Brix',
-    description: 'Browse selected project showcases and approach examples from Synergy Brix, including demonstration case studies and solution patterns.',
+    title: 'Client Work & Case Studies | Synergy Brix',
+    description:
+      'Browse selected project showcases from Synergy Brix, including live client case studies for logistics platforms and wellness coaching brands.',
     canonical: `${SITE_URL}/work`,
   },
   process: {
-    title: 'Process | Synergy Brix',
-    description: 'Learn how Synergy Brix approaches discovery, planning, design, development, testing, deployment, and support for business software projects.',
+    title: 'Software Development Process & Delivery Model | Synergy Brix',
+    description:
+      'Learn how Synergy Brix approaches discovery, planning, design, development, testing, deployment, and ongoing support for business software.',
     canonical: `${SITE_URL}/process`,
   },
   technologies: {
-    title: 'Technologies | Synergy Brix',
-    description: 'Review Synergy Brix technology capabilities across frontend, backend, databases, APIs, security, cloud, and DevOps.',
+    title: 'Technology Stack & Engineering Capabilities | Synergy Brix',
+    description:
+      'Review Synergy Brix technology capabilities across React, TypeScript, Java, Spring Boot, PostgreSQL, Docker, cloud deployment, and REST APIs.',
     canonical: `${SITE_URL}/technologies`,
   },
   insights: {
-    title: 'Insights | Synergy Brix',
-    description: 'Explore practical insights on business software, automation, architecture, integrations, digital transformation, and technology strategy.',
+    title: 'Software & Technology Insights | Synergy Brix',
+    description:
+      'Explore practical articles on business software, automation, API design, architecture, digital transformation, and better technology decisions.',
     canonical: `${SITE_URL}/insights`,
   },
   contact: {
-    title: 'Contact | Synergy Brix',
-    description: 'Tell Synergy Brix about your software challenge, automation idea, or business technology initiative.',
+    title: 'Contact Synergy Brix | Start Your Software Project',
+    description:
+      'Get in touch with Synergy Brix to discuss your software project, automation idea, web application, or digital technology initiative.',
     canonical: `${SITE_URL}/contact`,
   },
   faq: {
-    title: 'FAQ | Synergy Brix',
-    description: 'Find answers about software development services, project process, integrations, cloud deployment, automation, and support.',
+    title: 'Frequently Asked Questions (FAQ) | Synergy Brix',
+    description:
+      'Find answers to common questions about custom software development, web applications, integrations, cloud hosting, automation, and project planning.',
     canonical: `${SITE_URL}/faq`,
   },
   privacy: {
     title: 'Privacy Policy | Synergy Brix',
-    description: 'Read the Synergy Brix privacy policy placeholder and information requirements for future legal review.',
+    description:
+      'Read the Synergy Brix privacy policy detailing data handling practices, security commitments, and operational privacy guidelines.',
     canonical: `${SITE_URL}/privacy`,
   },
   terms: {
     title: 'Terms & Conditions | Synergy Brix',
-    description: 'Read the Synergy Brix terms and conditions placeholder for legal review and future refinement.',
+    description:
+      'Read the Synergy Brix terms and conditions regarding software development services, project scopes, intellectual property, and service agreements.',
     canonical: `${SITE_URL}/terms`,
-  }
+  },
 }
 
 export const contactTypes = [
