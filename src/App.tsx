@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, MotionConfig, useMotionValue, useMotionTemplate, useReducedMotion } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -78,6 +79,7 @@ function App() {
     <MotionConfig reducedMotion="user">
       <BrowserRouter>
         <AppShell />
+        <Analytics />
       </BrowserRouter>
     </MotionConfig>
   )
