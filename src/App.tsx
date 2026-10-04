@@ -9,6 +9,7 @@ import {
   Sparkles,
   Code2,
   Mail,
+  Phone,
   MapPin,
   Cloud,
   Database,
@@ -25,7 +26,7 @@ import {
   Quote,
   ExternalLink,
 } from 'lucide-react'
-import { FaLinkedinIn, FaInstagram } from 'react-icons/fa'
+import { FaLinkedinIn, FaInstagram, FaWhatsapp } from 'react-icons/fa'
 import {
   blogPosts,
   caseStudies,
@@ -136,6 +137,7 @@ function AppShell() {
       </main>
       <Footer />
       <FloatingContactButton />
+      <FloatingContactWidget />
     </>
   )
 }
@@ -480,13 +482,15 @@ function Footer() {
                   key={social.label}
                   href={social.href}
                   target="_blank"
-                  rel="noreferrer"
+                  rel={social.label === 'WhatsApp' ? 'noopener noreferrer' : 'noreferrer'}
                   data-cursor="hover"
                   className="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-slate-300 transition duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:bg-emerald-500/8 hover:text-emerald-200"
                   aria-label={social.label}
                 >
                   {social.label.toLowerCase().includes('linkedin') ? (
                     <FaLinkedinIn size={16} className="transition-transform duration-300 group-hover:scale-110" />
+                  ) : social.label.toLowerCase().includes('whatsapp') ? (
+                    <FaWhatsapp size={16} className="transition-transform duration-300 group-hover:scale-110" />
                   ) : (
                     <FaInstagram size={16} className="transition-transform duration-300 group-hover:scale-110" />
                   )}
@@ -2568,6 +2572,87 @@ function ScrollIndicator() {
 
 function useReducedMotionSafe() {
   return useReducedMotion()
+}
+
+function FloatingContactWidget() {
+  const [phoneOpen, setPhoneOpen] = useState(false)
+  const phoneRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!phoneOpen) return
+    const onDocClick = (e: MouseEvent) => {
+      if (phoneRef.current && !phoneRef.current.contains(e.target as Node)) {
+        setPhoneOpen(false)
+      }
+    }
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPhoneOpen(false)
+    }
+    document.addEventListener('mousedown', onDocClick)
+    document.addEventListener('keydown', onEsc)
+    return () => {
+      document.removeEventListener('mousedown', onDocClick)
+      document.removeEventListener('keydown', onEsc)
+    }
+  }, [phoneOpen])
+
+  return (
+    <div className="fixed right-6 bottom-20 z-40 hidden flex-col gap-3 sm:flex">
+      <a
+        href="https://wa.me/917972415528"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with Synergy Brix on WhatsApp"
+        className="group inline-flex h-12 w-12 sm:h-[52px] sm:w-[52px] items-center justify-center rounded-full border border-emerald-400/30 bg-ink-900/90 text-emerald-300 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/60 hover:bg-ink-800 hover:text-emerald-200 hover:shadow-[0_0_18px_rgba(16,185,129,0.25)]"
+      >
+        <FaWhatsapp size={22} className="transition-transform duration-300 group-hover:scale-110" />
+      </a>
+
+      <div className="relative" ref={phoneRef}>
+        <button
+          type="button"
+          aria-label="Call Synergy Brix"
+          onClick={() => setPhoneOpen((v) => !v)}
+          className="group inline-flex h-12 w-12 sm:h-[52px] sm:w-[52px] items-center justify-center rounded-full border border-white/10 bg-ink-900/90 text-slate-300 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:bg-ink-800 hover:text-emerald-200 hover:shadow-[0_0_14px_rgba(16,185,129,0.18)]"
+        >
+          <Phone size={20} className="transition-transform duration-300 group-hover:scale-110" />
+        </button>
+
+        <AnimatePresence>
+          {phoneOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute bottom-[68px] right-0 w-[200px] sm:w-[220px] rounded-2xl border border-white/10 bg-ink-900/95 p-4 shadow-xl backdrop-blur-xl"
+            >
+              <div className="flex items-center justify-between">
+                <h4 className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-emerald-300/80">Call Synergy Brix</h4>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  onClick={() => setPhoneOpen(false)}
+                  className="text-slate-400 transition hover:text-white"
+                >
+                  ×
+                </button>
+              </div>
+              <p className="mt-2 text-sm leading-6 text-slate-400">Have a project in mind? Talk to the Synergy Brix team.</p>
+              <p className="mt-3 font-mono text-sm text-white">+91 79724 15528</p>
+              <a
+                href="tel:+917972415528"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-400"
+                aria-label="Call Synergy Brix at +91 79724 15528"
+              >
+                Call Now
+              </a>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  )
 }
 
 export default App

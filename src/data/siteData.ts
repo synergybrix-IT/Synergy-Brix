@@ -354,6 +354,7 @@ export const footerLinks = {
   social: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/synergy-brix-721726433/' },
     { label: 'Instagram', href: 'https://www.instagram.com/synergy.brix' },
+    { label: 'WhatsApp', href: 'https://wa.me/917972415528' },
   ],
 }
 
