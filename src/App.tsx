@@ -2597,13 +2597,13 @@ function FloatingContactWidget() {
   }, [phoneOpen])
 
   return (
-    <div className="fixed right-6 bottom-20 z-40 hidden flex-col gap-3 sm:flex">
+    <div className="fixed right-4 bottom-[max(18px,env(safe-area-inset-bottom))] z-50 flex flex-col gap-3 sm:right-6 sm:bottom-20">
       <a
         href="https://wa.me/917972415528"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Synergy Brix on WhatsApp"
-        className="group inline-flex h-12 w-12 sm:h-[52px] sm:w-[52px] items-center justify-center rounded-full border border-emerald-400/30 bg-ink-900/90 text-emerald-300 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/60 hover:bg-ink-800 hover:text-emerald-200 hover:shadow-[0_0_18px_rgba(16,185,129,0.25)]"
+        className="touch-manipulation group inline-flex h-12 w-12 sm:h-[52px] sm:w-[52px] items-center justify-center rounded-full border border-emerald-400/30 bg-ink-900/90 text-emerald-300 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/60 hover:bg-ink-800 hover:text-emerald-200 hover:shadow-[0_0_18px_rgba(16,185,129,0.25)]"
       >
         <FaWhatsapp size={22} className="transition-transform duration-300 group-hover:scale-110" />
       </a>
@@ -2613,7 +2613,7 @@ function FloatingContactWidget() {
           type="button"
           aria-label="Call Synergy Brix"
           onClick={() => setPhoneOpen((v) => !v)}
-          className="group inline-flex h-12 w-12 sm:h-[52px] sm:w-[52px] items-center justify-center rounded-full border border-white/10 bg-ink-900/90 text-slate-300 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:bg-ink-800 hover:text-emerald-200 hover:shadow-[0_0_14px_rgba(16,185,129,0.18)]"
+          className="touch-manipulation group inline-flex h-12 w-12 sm:h-[52px] sm:w-[52px] items-center justify-center rounded-full border border-white/10 bg-ink-900/90 text-slate-300 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:bg-ink-800 hover:text-emerald-200 hover:shadow-[0_0_14px_rgba(16,185,129,0.18)]"
         >
           <Phone size={20} className="transition-transform duration-300 group-hover:scale-110" />
         </button>
@@ -2625,7 +2625,7 @@ function FloatingContactWidget() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute bottom-[68px] right-0 w-[200px] sm:w-[220px] rounded-2xl border border-white/10 bg-ink-900/95 p-4 shadow-xl backdrop-blur-xl"
+              className="absolute bottom-[68px] right-0 w-[calc(100vw-40px)] max-w-[220px] rounded-2xl border border-white/10 bg-ink-900/95 p-4 shadow-xl backdrop-blur-xl"
             >
               <div className="flex items-center justify-between">
                 <h4 className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-emerald-300/80">Call Synergy Brix</h4>
