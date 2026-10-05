@@ -45,18 +45,25 @@ function buildEmailBody(data: ProjectInquiryPayload) {
   ].join('\n')
 }
 
-export default async function handler(req: { method: string; body: string }, res: { status: (code: number) => { json: (payload: unknown) => void } }) {
+function jsonResponse(status: number, body: unknown) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
+export default async function handler(req: Request) {
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' })
-    return
+    return jsonResponse(405, { success: false, error: 'Method not allowed.' })
   }
 
   let data: ProjectInquiryPayload
   try {
-    data = JSON.parse(req.body || '{}') as ProjectInquiryPayload
+    data = await req.json()
   } catch {
-    res.status(400).json({ error: 'Invalid request body.' })
-    return
+    return jsonResponse(400, { success: false, error: 'Invalid request body.' })
   }
 
   const missing = REQUIRED_FIELDS.filter((field) => {
@@ -66,33 +73,38 @@ export default async function handler(req: { method: string; body: string }, res
   })
 
   if (missing.length > 0) {
-    res.status(400).json({ error: `Missing required fields: ${missing.map((field) => field.label).join(', ')}.` })
-    return
+    return jsonResponse(400, {
+      success: false,
+      error: `Missing required fields: ${missing.map((field) => field.label).join(', ')}.`,
+    })
   }
 
   const contactEmail = process.env.CONTACT_EMAIL
   if (!contactEmail) {
-    res.status(500).json({ error: 'Server configuration error.' })
-    return
+    return jsonResponse(500, { success: false, error: 'Server configuration error.' })
   }
 
   if (!process.env.RESEND_API_KEY) {
-    res.status(500).json({ error: 'Email service is not configured.' })
-    return
+    return jsonResponse(500, { success: false, error: 'Email service is not configured.' })
   }
 
   try {
-    await resend.emails.send({
-      from: `Synergy Brix <${contactEmail}>`,
+    const result = await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || `Synergy Brix <${contactEmail}>`,
       to: [contactEmail],
       replyTo: data.businessEmail,
       subject: `New Project Inquiry – Synergy Brix – ${data.fullName}`,
       text: buildEmailBody(data),
     })
 
-    res.status(200).json({ ok: true })
+    if (result.error) {
+      console.error('Resend error', result.error)
+      return jsonResponse(500, { success: false, error: 'Failed to send inquiry. Please try again later.' })
+    }
+
+    return jsonResponse(200, { success: true, message: 'Message sent successfully' })
   } catch (error) {
     console.error('Project inquiry email failed', error)
-    res.status(500).json({ error: 'Failed to send inquiry. Please try again later.' })
+    return jsonResponse(500, { success: false, error: 'Failed to send inquiry. Please try again later.' })
   }
 }
