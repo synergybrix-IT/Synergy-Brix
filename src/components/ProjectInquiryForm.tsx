@@ -101,7 +101,7 @@ export default function ProjectInquiryForm({ isOpen, onClose }: ProjectInquiryFo
     setFormState('submitting')
 
     try {
-      const response = await fetch('/api/project-inquiry', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
