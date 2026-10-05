@@ -84,7 +84,7 @@ export default async function handler(req: Request) {
 
   let raw: ContactPayload
   try {
-    raw = await req.json()
+    raw = (await req.json()) as ContactPayload
   } catch {
     return jsonResponse(400, { success: false, error: 'Invalid request body.' })
   }
@@ -92,7 +92,7 @@ export default async function handler(req: Request) {
   const data = normalise(raw)
 
   const missing = REQUIRED_FIELDS.filter((field) => {
-    const value = data[field.key]
+    const value = data[field.key as keyof typeof data]
     if (Array.isArray(value)) return value.length === 0
     return !value || String(value).trim().length === 0
   })
