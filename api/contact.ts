@@ -1,7 +1,3 @@
-import { Resend } from 'resend'
-
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 interface ContactPayload {
   fullName?: string
   name?: string
@@ -77,15 +73,38 @@ function jsonResponse(status: number, body: unknown) {
   })
 }
 
+async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(new Error(`${label} timed out after ${ms}ms`))
+        }, ms)
+      }),
+    ])
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId)
+  }
+}
+
 export default async function handler(req: Request) {
+  console.log('[contact] function started')
+  console.log('[contact] method:', req.method)
+
   if (req.method !== 'POST') {
+    console.log('[contact] rejecting non-POST')
     return jsonResponse(405, { success: false, error: 'Method not allowed.' })
   }
 
+  console.log('[contact] parsing request')
   let raw: ContactPayload
   try {
     raw = (await req.json()) as ContactPayload
   } catch {
+    console.log('[contact] invalid json')
     return jsonResponse(400, { success: false, error: 'Invalid request body.' })
   }
 
@@ -98,6 +117,7 @@ export default async function handler(req: Request) {
   })
 
   if (missing.length > 0) {
+    console.log('[contact] missing fields:', missing.map((f) => f.label))
     return jsonResponse(400, {
       success: false,
       error: `Missing required fields: ${missing.map((field) => field.label).join(', ')}.`,
@@ -106,30 +126,44 @@ export default async function handler(req: Request) {
 
   const contactEmail = process.env.CONTACT_EMAIL
   if (!contactEmail) {
+    console.log('[contact] missing CONTACT_EMAIL')
     return jsonResponse(500, { success: false, error: 'Server configuration error.' })
   }
 
   if (!process.env.RESEND_API_KEY) {
+    console.log('[contact] missing RESEND_API_KEY')
     return jsonResponse(500, { success: false, error: 'Email service is not configured.' })
   }
 
   try {
-    const result = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || `Synergy Brix <${contactEmail}>`,
-      to: [contactEmail],
-      replyTo: data.businessEmail,
-      subject: `New Website Enquiry — ${data.fullName}`,
-      text: buildEmailBody(data),
-    })
+    console.log('[contact] importing Resend')
+    const { Resend } = await import('resend')
 
-    if (result.error) {
-      console.error('Resend error', result.error)
+    console.log('[contact] initializing Resend')
+    const resend = new Resend(process.env.RESEND_API_KEY)
+
+    console.log('[contact] sending email')
+    const result = await withTimeout(
+      resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL || `Synergy Brix <${contactEmail}>`,
+        to: [contactEmail],
+        replyTo: data.businessEmail,
+        subject: `New Website Enquiry — ${data.fullName}`,
+        text: buildEmailBody(data),
+      }),
+      10000,
+      'Resend send',
+    )
+
+    if ((result as { error?: unknown }).error) {
+      console.error('[contact] Resend error', (result as { error: unknown }).error)
       return jsonResponse(500, { success: false, error: 'Failed to send enquiry. Please try again later.' })
     }
 
+    console.log('[contact] email sent')
     return jsonResponse(200, { success: true, message: 'Message sent successfully' })
   } catch (error) {
-    console.error('Contact email failed', error)
-    return jsonResponse(500, { success: false, error: 'Failed to send enquiry. Please try again later.' })
+    console.error('[contact] email failed', error)
+    return jsonResponse(500, { success: false, error: 'Unable to send enquiry right now. Please try again.' })
   }
 }
