@@ -61,7 +61,7 @@ export default async function handler(req: Request) {
 
   let data: ProjectInquiryPayload
   try {
-    data = await req.json()
+    data = (await req.json()) as ProjectInquiryPayload
   } catch {
     return jsonResponse(400, { success: false, error: 'Invalid request body.' })
   }
