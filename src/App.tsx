@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, createContext, useContext } from 'react'
 import { BrowserRouter, Link, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, MotionConfig, useMotionValue, useMotionTemplate, useReducedMotion } from 'framer-motion'
-import { Analytics } from '@vercel/analytics/react'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -42,6 +41,8 @@ import {
   solutions,
 } from './data/siteData'
 import { SITE_URL } from './config/siteUrl'
+import { SpeedInsights } from '@vercel/speed-insights/react'
+import { Analytics } from '@vercel/analytics/react'
 import { usePageMeta } from './hooks/usePageMeta'
 import {
   PointerParallax,
@@ -57,9 +58,13 @@ import {
   BgText,
   SectionIndex,
 } from './components/premium'
+import ProjectInquiryForm from './components/ProjectInquiryForm'
 
-const GOOGLE_FORM_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLSfULk7ZMRSZ9krewdbd1elEYa8jLu0qmj3051MAKiYAqxCHcw/viewform?usp=header'
+const ProjectModalContext = createContext<() => void>(() => {})
+
+function useOpenProjectModal() {
+  return useContext(ProjectModalContext)
+}
 
 const ALL_NAV = [
   { label: 'Home', id: 'home', to: '/#home' },
@@ -75,11 +80,16 @@ const ALL_NAV = [
  * ========================================================================= */
 
 function App() {
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false)
+
   return (
     <MotionConfig reducedMotion="user">
       <BrowserRouter>
-        <AppShell />
-        <Analytics />
+        <ProjectModalContext.Provider value={() => setIsProjectModalOpen(true)}>
+          <AppShell />
+          <ProjectInquiryForm isOpen={isProjectModalOpen} onClose={() => setIsProjectModalOpen(false)} />
+          <Analytics />
+        </ProjectModalContext.Provider>
       </BrowserRouter>
     </MotionConfig>
   )
@@ -102,6 +112,7 @@ function AppShell() {
   return (
     <>
       <Cursor />
+      <SpeedInsights />
       <Preloader />
       <ScrollProgress />
       <Navbar />
@@ -155,6 +166,7 @@ function Navbar() {
   const [activeSection, setActiveSection] = useState('home')
   const location = useLocation()
   const navigate = useNavigate()
+  const openProjectModal = useOpenProjectModal()
 
   useEffect(() => {
     if (isOpen) {
@@ -332,9 +344,10 @@ function Navbar() {
           <div className="flex items-center gap-3">
             <div className="hidden lg:block">
               <Magnetic>
-                <LinkButton href={GOOGLE_FORM_URL} variant="primary" external icon={<ArrowRight size={15} />}>
+                <button type="button" onClick={() => openProjectModal()} className="btn-primary btn-base relative inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
                   Start a Project
-                </LinkButton>
+                  <ArrowRight size={15} />
+                </button>
               </Magnetic>
             </div>
             <button
@@ -430,9 +443,10 @@ function Navbar() {
                 animate={{ opacity: 1, y: 0, transition: { delay: 0.55, duration: 0.5 } }}
                 className="mt-auto pt-10"
               >
-                <LinkButton href={GOOGLE_FORM_URL} variant="primary" fullWidth external icon={<ArrowRight size={16} />}>
+                <button type="button" onClick={() => openProjectModal()} className="btn-primary btn-base relative inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
                   Start a Project
-                </LinkButton>
+                  <ArrowRight size={16} />
+                </button>
                 <div className="mt-6 flex items-center gap-4 text-sm text-slate-400">
                   <a href="mailto:synergy.brix@gmail.com" className="hover:text-white">synergy.brix@gmail.com</a>
                 </div>
@@ -567,6 +581,7 @@ function HomeJsonLd() {
 
 function HomePage() {
   usePageMeta(pageMeta.home)
+  const openProjectModal = useOpenProjectModal()
 
   return (
     <>
@@ -600,8 +615,8 @@ function HomePage() {
         description="Let's turn it into a powerful digital solution."
         primaryLabel="Start Your Project"
         secondaryLabel="Talk to Us"
-        primaryHref={GOOGLE_FORM_URL}
-        secondaryHref={GOOGLE_FORM_URL}
+        onPrimaryClick={openProjectModal}
+        onSecondaryClick={openProjectModal}
       />
     </>
   )
@@ -678,6 +693,7 @@ function ArchitectureVisual() {
 
 function Hero() {
   const ref = useRef<HTMLDivElement>(null)
+  const openProjectModal = useOpenProjectModal()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const y1 = useTransform(scrollYProgress, [0, 1], [0, 100])
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -70])
@@ -768,9 +784,10 @@ function Hero() {
               className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
             >
               <Magnetic>
-                <LinkButton href={GOOGLE_FORM_URL} variant="primary" external icon={<ArrowRight size={16} className="arrow-shift" />}>
+                <button type="button" onClick={() => openProjectModal()} className="btn-primary btn-base relative inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold">
                   Start a Project
-                </LinkButton>
+                  <ArrowRight size={16} className="arrow-shift" />
+                </button>
               </Magnetic>
               <Magnetic>
                 <LinkButton href="/#services" variant="secondary">
@@ -1487,6 +1504,7 @@ function AboutPage() {
 
 function ServicesPage() {
   usePageMeta(pageMeta.services)
+  const openProjectModal = useOpenProjectModal()
   return (
     <div className="bg-ink-950">
       <PageHero
@@ -1511,8 +1529,8 @@ function ServicesPage() {
         description="Tell us what you need to improve, connect, or build. We'll help shape a practical way forward."
         primaryLabel="Start a Project"
         secondaryLabel="Talk to Us"
-        primaryHref={GOOGLE_FORM_URL}
-        secondaryHref={GOOGLE_FORM_URL}
+        onPrimaryClick={openProjectModal}
+        onSecondaryClick={openProjectModal}
       />
     </div>
   )
@@ -1521,6 +1539,7 @@ function ServicesPage() {
 function ServiceDetailPage() {
   const { slug } = useParams()
   const service = services.find((item) => item.slug === slug)
+  const openProjectModal = useOpenProjectModal()
 
   usePageMeta({
     title: service ? `${service.title} Services | Synergy Brix` : 'Page Not Found | Synergy Brix',
@@ -1570,9 +1589,10 @@ function ServiceDetailPage() {
               <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-emerald-500/20 blur-3xl" />
               <h4 className="text-xl font-semibold text-white">Ready to move forward?</h4>
               <p className="mt-2 text-sm leading-6 text-emerald-100">We can help shape the right technology approach for your goals.</p>
-              <LinkButton href={GOOGLE_FORM_URL} variant="primary" external className="mt-6" icon={<ArrowRight size={15} className="arrow-shift" />}>
+              <button type="button" onClick={() => openProjectModal()} className="btn-primary btn-base relative inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
                 {service.cta}
-              </LinkButton>
+                <ArrowRight size={15} className="arrow-shift" />
+              </button>
             </div>
           </div>
         </div>
@@ -1952,6 +1972,7 @@ function InsightDetailPage() {
 
 function ContactPage() {
   usePageMeta(pageMeta.contact)
+  const openProjectModal = useOpenProjectModal()
   return (
     <section className="surface-canvas relative overflow-hidden pt-32 pb-20 lg:pt-44 lg:pb-28">
       <div className="mesh-bg absolute inset-0" />
@@ -1973,11 +1994,12 @@ function ContactPage() {
           </motion.p>
           <motion.div variants={fadeIn} className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             <Magnetic>
-              <LinkButton href={GOOGLE_FORM_URL} variant="primary" external icon={<ArrowRight size={16} className="arrow-shift" />}>
+              <button type="button" onClick={() => openProjectModal()} className="btn-primary btn-base relative inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold">
                 Start a Project
-              </LinkButton>
+                <ArrowRight size={16} className="arrow-shift" />
+              </button>
             </Magnetic>
-            <span className="text-sm text-slate-500">Opens our project enquiry form in a new tab</span>
+            <span className="text-sm text-slate-500">Opens our project enquiry form</span>
           </motion.div>
           <motion.div variants={fadeIn} className="mt-12 grid gap-3 sm:grid-cols-2">
             <ContactInfoCard icon={<Mail size={16} />} label="Email" value="synergy.brix@gmail.com" href="mailto:synergy.brix@gmail.com" />
@@ -2300,15 +2322,19 @@ function CTASection({
   description,
   primaryLabel,
   secondaryLabel,
-  primaryHref,
-  secondaryHref,
+  primaryHref = '#',
+  secondaryHref = '#',
+  onPrimaryClick,
+  onSecondaryClick,
 }: {
   title: string
   description: string
   primaryLabel: string
   secondaryLabel: string
-  primaryHref: string
-  secondaryHref: string
+  primaryHref?: string
+  secondaryHref?: string
+  onPrimaryClick?: () => void
+  onSecondaryClick?: () => void
 }) {
   return (
     <section id="contact" className="relative overflow-hidden border-t border-white/6 bg-ink-950 text-white">
@@ -2326,14 +2352,27 @@ function CTASection({
         </div>
         <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
           <Magnetic>
-            <LinkButton href={primaryHref} variant="primary" external icon={<ArrowRight size={16} className="arrow-shift" />}>
-              {primaryLabel}
-            </LinkButton>
+            {onPrimaryClick ? (
+              <button type="button" onClick={onPrimaryClick} className="btn-primary btn-base relative inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold">
+                {primaryLabel}
+                <ArrowRight size={16} className="arrow-shift" />
+              </button>
+            ) : (
+              <LinkButton href={primaryHref} variant="primary" external icon={<ArrowRight size={16} className="arrow-shift" />}>
+                {primaryLabel}
+              </LinkButton>
+            )}
           </Magnetic>
           <Magnetic>
-            <LinkButton href={secondaryHref} variant="secondary" external>
-              {secondaryLabel}
-            </LinkButton>
+            {onSecondaryClick ? (
+              <button type="button" onClick={onSecondaryClick} className="btn-secondary btn-base relative inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold">
+                {secondaryLabel}
+              </button>
+            ) : (
+              <LinkButton href={secondaryHref} variant="secondary" external>
+                {secondaryLabel}
+              </LinkButton>
+            )}
           </Magnetic>
         </div>
       </Container>
