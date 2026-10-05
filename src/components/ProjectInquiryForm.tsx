@@ -103,14 +103,24 @@ export default function ProjectInquiryForm({ isOpen, onClose }: ProjectInquiryFo
     try {
       const response = await fetch('/api/project-inquiry', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
         body: JSON.stringify(formData),
       })
 
+      const contentType = response.headers.get('content-type') || ''
+
+      if (!contentType.includes('application/json')) {
+        const text = await response.text()
+        throw new Error(`API returned an unexpected response (${response.status}): ${text.slice(0, 300)}`)
+      }
+
       const result = await response.json()
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Something went wrong. Please try again.')
+      if (!response.ok || !result.success) {
+        throw new Error(result?.error || 'Something went wrong. Please try again.')
       }
 
       setFormState('success')
