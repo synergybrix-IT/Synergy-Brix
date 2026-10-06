@@ -1494,6 +1494,30 @@ function AboutPage() {
           <InfoPanel title="Our Mission" text="To build practical, scalable, and affordable technology solutions that solve real business problems and create measurable value for our clients." />
         </div>
 
+        <div className="mt-24">
+          <SectionIndex index="04" label="Office" />
+          <h2 className="mt-6 text-4xl font-semibold tracking-tightest text-white sm:text-5xl">Where we’re <span className="font-serif-display italic text-emerald-200/90">located</span></h2>
+          <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-start">
+            <div className="card-lift rounded-3xl border border-white/8 bg-white/3 p-6 sm:p-8">
+              <div className="flex items-center gap-3 text-emerald-300">
+                <MapPin size={20} />
+                <span className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-emerald-300/80">Vasai West, Maharashtra</span>
+              </div>
+              <address className="mt-4 not-italic text-sm leading-7 text-slate-300 sm:text-base">
+                <p className="font-semibold text-white">Synergy Brix</p>
+                <p>Gonsalves Property</p>
+                <p>Near Alphonso Church</p>
+                <p>Behind Stella Petrol Pump</p>
+                <p>Vasai West, Maharashtra – 401202</p>
+                <p>India</p>
+              </address>
+            </div>
+            <div className="flex flex-col justify-center text-base leading-7 text-slate-300 sm:text-lg">
+              <p>Synergy Brix is based in Vasai West, Maharashtra, and provides IT services, web development, custom software, AI automation, WhatsApp automation, CRM solutions and cloud solutions for businesses in Vasai, Virar, Mumbai and beyond.</p>
+            </div>
+          </div>
+        </div>
+
         <p className="mt-20 text-center font-serif-display text-3xl italic text-emerald-200/90 sm:text-4xl">
           SYNERGYBRIX — Where business needs meet technology.
         </p>
