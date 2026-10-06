@@ -68,7 +68,7 @@ function useOpenProjectModal() {
 
 const ALL_NAV = [
   { label: 'Home', id: 'home', to: '/#home' },
-  { label: 'Services', id: 'services', to: '/#services' },
+  { label: 'Services', id: 'services', to: '/services' },
   { label: 'Solutions', id: 'solutions', to: '/solutions' },
   { label: 'Projects', id: 'projects', to: '/#projects' },
   { label: 'About', id: 'about', to: '/about' },

@@ -12,6 +12,7 @@ export interface RouteMeta {
   changeFrequency: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never'
   priority: number
   jsonLd: Record<string, unknown> | Array<Record<string, unknown>>
+  seoBody?: string
 }
 
 const DEFAULT_OG_IMAGE = `${SITE_URL}/logo.png`
