@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { getAllRoutesMeta, getNotFoundRouteMeta, type RouteMeta } from './routesMeta.ts'
 import { buildRobotsTxt, buildSitemapXml } from './sitemap.ts'
+import { buildSeoBody } from './seoBodyContent.ts'
 
 function escapeAttr(str: string): string {
   return str
@@ -79,6 +80,14 @@ export function generatePrerenderedHtml(templateHtml: string, route: RouteMeta):
       html = html.replace('</head>', `    ${jsonLdTag}\n  </head>`)
     }
   }
+
+  // 8. Inject SEO body content into <div id="root"> so Googlebot can crawl the page
+  //    without executing JavaScript.
+  const seoBody = route.seoBody ?? buildSeoBody(route.path, route.title, route.description)
+  html = html.replace(
+    '<div id="root"></div>',
+    `<div id="root">${seoBody}</div><noscript>${seoBody}</noscript>`,
+  )
 
   return html
 }
