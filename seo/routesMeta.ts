@@ -39,6 +39,14 @@ export const ORGANIZATION_SCHEMA = {
     contactType: 'customer service',
     availableLanguage: ['English', 'Hindi'],
   },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Gonsalves Property, Near Alphonso Church, Behind Stella Petrol Pump',
+    addressLocality: 'Vasai West',
+    addressRegion: 'Maharashtra',
+    postalCode: '401202',
+    addressCountry: 'India',
+  },
 }
 
 export const WEBSITE_SCHEMA = {
