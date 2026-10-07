@@ -3,31 +3,7 @@ import {
   GOOGLE_FORM_ENTRIES,
 } from './googleFormsConfig.js'
 
-interface ProjectInquiryPayload {
-  fullName: string
-  company?: string
-  businessEmail: string
-  phone: string
-  mainGoal: string
-  budget?: string
-  description: string
-}
-
-interface NodeServerlessResponse {
-  status: (code: number) => NodeServerlessResponse
-  json: (data: unknown) => void
-  setHeader: (name: string, value: string) => void
-  end: (data?: unknown) => void
-}
-
-interface NodeServerlessRequest {
-  method?: string
-  body?: unknown
-  headers?: Record<string, string | string[] | undefined>
-  json?: () => Promise<unknown>
-}
-
-function sendResponse(status: number, body: unknown, res?: NodeServerlessResponse) {
+function sendResponse(status, body, res) {
   if (res && typeof res.status === 'function' && typeof res.json === 'function') {
     res.status(status).json(body)
     return
@@ -40,28 +16,27 @@ function sendResponse(status: number, body: unknown, res?: NodeServerlessRespons
   })
 }
 
-async function parseRequestBody(req: Request | NodeServerlessRequest) {
-  if (typeof (req as Request).json === 'function') {
-    return (await (req as Request).json()) as ProjectInquiryPayload
+async function parseRequestBody(req) {
+  if (typeof req.json === 'function') {
+    return await req.json()
   }
-  const nodeReq = req as NodeServerlessRequest
-  if (nodeReq.body) {
-    if (typeof nodeReq.body === 'string') {
-      return JSON.parse(nodeReq.body) as ProjectInquiryPayload
+  if (req.body) {
+    if (typeof req.body === 'string') {
+      return JSON.parse(req.body)
     }
-    if (typeof nodeReq.body === 'object') {
-      return nodeReq.body as ProjectInquiryPayload
+    if (typeof req.body === 'object') {
+      return req.body
     }
   }
   throw new Error('No valid body provided')
 }
 
-async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined
+async function withTimeout(promise, ms, label) {
+  let timeoutId
   try {
     return await Promise.race([
       promise,
-      new Promise<never>((_, reject) => {
+      new Promise((_, reject) => {
         timeoutId = setTimeout(() => {
           reject(new Error(`${label} timed out after ${ms}ms`))
         }, ms)
@@ -72,15 +47,15 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): P
   }
 }
 
-function normalizeInput(raw: ProjectInquiryPayload) {
+function normalizeInput(raw) {
   const data = raw || {}
-  const fullName = String(data.fullName || '').trim()
+  const fullName = String(data.fullName || data.name || '').trim()
   const company = String(data.company || '').trim()
-  const businessEmail = String(data.businessEmail || '').trim()
+  const businessEmail = String(data.businessEmail || data.email || '').trim()
   const phone = String(data.phone || '').trim()
   const mainGoal = String(data.mainGoal || '').trim()
   const budget = String(data.budget || '').trim()
-  const description = String(data.description || '').trim()
+  const description = String(data.description || data.message || '').trim()
 
   return {
     fullName,
@@ -93,7 +68,7 @@ function normalizeInput(raw: ProjectInquiryPayload) {
   }
 }
 
-function validateInput(data: ReturnType<typeof normalizeInput>) {
+function validateInput(data) {
   if (!data.fullName) {
     return 'Full Name is required.'
   }
@@ -112,7 +87,7 @@ function validateInput(data: ReturnType<typeof normalizeInput>) {
   return null
 }
 
-function buildGoogleFormPayload(data: ReturnType<typeof normalizeInput>) {
+function buildGoogleFormPayload(data) {
   const params = new URLSearchParams()
 
   params.set(GOOGLE_FORM_ENTRIES.fullName, data.fullName)
@@ -134,20 +109,20 @@ function buildGoogleFormPayload(data: ReturnType<typeof normalizeInput>) {
   return params
 }
 
-export default async function handler(req: Request | NodeServerlessRequest, res?: NodeServerlessResponse) {
+export default async function handler(req, res) {
   try {
     const method = req.method || 'GET'
 
     if (method !== 'POST') {
-      console.log('[project-inquiry] rejected method:', method)
+      console.log('[contact] rejected method:', method)
       return sendResponse(405, { success: false, error: 'Method not allowed.' }, res)
     }
 
-    let raw: ProjectInquiryPayload
+    let raw
     try {
       raw = await parseRequestBody(req)
     } catch {
-      console.error('[project-inquiry] failed to parse JSON request body')
+      console.error('[contact] failed to parse JSON request body')
       return sendResponse(400, { success: false, error: 'Invalid JSON request body.' }, res)
     }
 
@@ -155,11 +130,11 @@ export default async function handler(req: Request | NodeServerlessRequest, res?
     const validationError = validateInput(data)
 
     if (validationError) {
-      console.log('[project-inquiry] validation error:', validationError)
+      console.log('[contact] validation error:', validationError)
       return sendResponse(400, { success: false, error: validationError }, res)
     }
 
-    console.log('[project-inquiry] forwarding submission to Google Forms server-side')
+    console.log('[contact] forwarding submission to Google Forms server-side')
     const formPayload = buildGoogleFormPayload(data)
 
     const result = await withTimeout(
@@ -174,12 +149,12 @@ export default async function handler(req: Request | NodeServerlessRequest, res?
       'Google Forms submit',
     )
 
-    console.log('[project-inquiry] Google Forms response status:', result.status)
+    console.log('[contact] Google Forms response status:', result.status)
 
     const isSuccess = result.ok || (result.status >= 200 && result.status < 400)
 
     if (!isSuccess) {
-      console.error('[project-inquiry] Google Forms returned non-success status:', result.status)
+      console.error('[contact] Google Forms returned non-success status:', result.status)
       const errorMsg =
         result.status === 401
           ? 'Google Form requires sign-in. Set "Collect email addresses" to "Do not collect" and "Limit to 1 response" to OFF in Google Form settings.'
@@ -187,10 +162,10 @@ export default async function handler(req: Request | NodeServerlessRequest, res?
       return sendResponse(500, { success: false, error: errorMsg }, res)
     }
 
-    console.log('[project-inquiry] submission successful')
+    console.log('[contact] submission successful')
     return sendResponse(200, { success: true, message: 'Message sent successfully' }, res)
   } catch (error) {
-    console.error('[project-inquiry] server error during handler execution:', error)
+    console.error('[contact] server error during handler execution:', error)
     return sendResponse(
       500,
       { success: false, error: 'Unable to send enquiry right now. Please try again.' },

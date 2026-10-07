@@ -3,31 +3,7 @@ import {
   GOOGLE_FORM_ENTRIES,
 } from './googleFormsConfig.js'
 
-interface ProjectInquiryPayload {
-  fullName: string
-  company?: string
-  businessEmail: string
-  phone: string
-  mainGoal: string
-  budget?: string
-  description: string
-}
-
-interface NodeServerlessResponse {
-  status: (code: number) => NodeServerlessResponse
-  json: (data: unknown) => void
-  setHeader: (name: string, value: string) => void
-  end: (data?: unknown) => void
-}
-
-interface NodeServerlessRequest {
-  method?: string
-  body?: unknown
-  headers?: Record<string, string | string[] | undefined>
-  json?: () => Promise<unknown>
-}
-
-function sendResponse(status: number, body: unknown, res?: NodeServerlessResponse) {
+function sendResponse(status, body, res) {
   if (res && typeof res.status === 'function' && typeof res.json === 'function') {
     res.status(status).json(body)
     return
@@ -40,28 +16,27 @@ function sendResponse(status: number, body: unknown, res?: NodeServerlessRespons
   })
 }
 
-async function parseRequestBody(req: Request | NodeServerlessRequest) {
-  if (typeof (req as Request).json === 'function') {
-    return (await (req as Request).json()) as ProjectInquiryPayload
+async function parseRequestBody(req) {
+  if (typeof req.json === 'function') {
+    return await req.json()
   }
-  const nodeReq = req as NodeServerlessRequest
-  if (nodeReq.body) {
-    if (typeof nodeReq.body === 'string') {
-      return JSON.parse(nodeReq.body) as ProjectInquiryPayload
+  if (req.body) {
+    if (typeof req.body === 'string') {
+      return JSON.parse(req.body)
     }
-    if (typeof nodeReq.body === 'object') {
-      return nodeReq.body as ProjectInquiryPayload
+    if (typeof req.body === 'object') {
+      return req.body
     }
   }
   throw new Error('No valid body provided')
 }
 
-async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined
+async function withTimeout(promise, ms, label) {
+  let timeoutId
   try {
     return await Promise.race([
       promise,
-      new Promise<never>((_, reject) => {
+      new Promise((_, reject) => {
         timeoutId = setTimeout(() => {
           reject(new Error(`${label} timed out after ${ms}ms`))
         }, ms)
@@ -72,7 +47,7 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): P
   }
 }
 
-function normalizeInput(raw: ProjectInquiryPayload) {
+function normalizeInput(raw) {
   const data = raw || {}
   const fullName = String(data.fullName || '').trim()
   const company = String(data.company || '').trim()
@@ -93,7 +68,7 @@ function normalizeInput(raw: ProjectInquiryPayload) {
   }
 }
 
-function validateInput(data: ReturnType<typeof normalizeInput>) {
+function validateInput(data) {
   if (!data.fullName) {
     return 'Full Name is required.'
   }
@@ -112,7 +87,7 @@ function validateInput(data: ReturnType<typeof normalizeInput>) {
   return null
 }
 
-function buildGoogleFormPayload(data: ReturnType<typeof normalizeInput>) {
+function buildGoogleFormPayload(data) {
   const params = new URLSearchParams()
 
   params.set(GOOGLE_FORM_ENTRIES.fullName, data.fullName)
@@ -134,7 +109,7 @@ function buildGoogleFormPayload(data: ReturnType<typeof normalizeInput>) {
   return params
 }
 
-export default async function handler(req: Request | NodeServerlessRequest, res?: NodeServerlessResponse) {
+export default async function handler(req, res) {
   try {
     const method = req.method || 'GET'
 
@@ -143,7 +118,7 @@ export default async function handler(req: Request | NodeServerlessRequest, res?
       return sendResponse(405, { success: false, error: 'Method not allowed.' }, res)
     }
 
-    let raw: ProjectInquiryPayload
+    let raw
     try {
       raw = await parseRequestBody(req)
     } catch {

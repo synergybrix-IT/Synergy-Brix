@@ -3,7 +3,13 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
+    "api/contact.js": {
+      "maxDuration": 10
+    },
     "api/contact.ts": {
+      "maxDuration": 10
+    },
+    "api/project-inquiry.js": {
       "maxDuration": 10
     },
     "api/project-inquiry.ts": {

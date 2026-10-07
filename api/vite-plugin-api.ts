@@ -14,7 +14,7 @@ export function apiDevPlugin(): Plugin {
             }
             const rawBody = Buffer.concat(chunks).toString('utf-8')
 
-            const filePath = url === '/api/contact' ? '/api/contact.ts' : '/api/project-inquiry.ts'
+            const filePath = url === '/api/contact' ? '/api/contact.js' : '/api/project-inquiry.js'
             const mod = await server.ssrLoadModule(filePath)
 
             const host = req.headers.host || 'localhost:5173'
