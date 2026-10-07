@@ -81,12 +81,12 @@ export function generatePrerenderedHtml(templateHtml: string, route: RouteMeta):
     }
   }
 
-  // 8. Inject SEO body content into <div id="root"> so Googlebot can crawl the page
-  //    without executing JavaScript.
+  // 8. Inject SEO body content as a SIBLING of <div id="root"> so React
+  //    hydration does not wipe it. Googlebot reads the DOM as-is.
   const seoBody = route.seoBody ?? buildSeoBody(route.path, route.title, route.description)
   html = html.replace(
     '<div id="root"></div>',
-    `<div id="root">${seoBody}</div><noscript>${seoBody}</noscript>`,
+    `<div id="root"></div><div id="seo-body" aria-hidden="false">${seoBody}</div><noscript>${seoBody}</noscript>`,
   )
 
   return html
