@@ -3,10 +3,10 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "api/contact.ts": {
+    "api/contact.js": {
       "maxDuration": 10
     },
-    "api/project-inquiry.ts": {
+    "api/project-inquiry.js": {
       "maxDuration": 10
     }
   },
