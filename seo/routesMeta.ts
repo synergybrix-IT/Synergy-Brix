@@ -796,7 +796,153 @@ export function getAllRoutesMeta(): RouteMeta[] {
       },
     },
 
-    // 24. Privacy Policy
+    // 24. Vasai Web Development Landing Page
+    {
+      path: '/website-development-company-in-vasai',
+      canonical: `${SITE_URL}/website-development-company-in-vasai`,
+      title: 'Website Development Company in Vasai | Synergy Brix',
+      description:
+        'Synergy Brix is a website and software development company serving businesses in Vasai-Virar with modern websites, web applications, business automation, CRM, APIs and custom software solutions.',
+      ogType: 'website',
+      ogImage: DEFAULT_OG_IMAGE,
+      twitterCard: 'summary_large_image',
+      robots: 'index, follow',
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@graph': [
+          makeBreadcrumbs([
+            { name: 'Home', path: '/' },
+            { name: 'Website Development Company in Vasai' },
+          ]),
+          {
+            '@type': 'LocalBusiness',
+            '@id': `${SITE_URL}/website-development-company-in-vasai#localbusiness`,
+            name: 'Synergy Brix',
+            url: `${SITE_URL}/website-development-company-in-vasai`,
+            logo: DEFAULT_OG_IMAGE,
+            image: DEFAULT_OG_IMAGE,
+            description:
+              'Synergy Brix is a website and software development company serving businesses in Vasai-Virar with modern websites, web applications, business automation, CRM, APIs and custom software solutions.',
+            telephone: '+91-79724-15528',
+            email: 'synergy.brix@gmail.com',
+            priceRange: '₹₹',
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: 'Gonsalves Property, Near Alphonso Church, Behind Stella Petrol Pump',
+              addressLocality: 'Vasai West',
+              addressRegion: 'Maharashtra',
+              postalCode: '401202',
+              addressCountry: 'India',
+            },
+            areaServed: [
+              { '@type': 'AdministrativeArea', name: 'Vasai' },
+              { '@type': 'AdministrativeArea', name: 'Vasai West' },
+              { '@type': 'AdministrativeArea', name: 'Vasai East' },
+              { '@type': 'AdministrativeArea', name: 'Virar' },
+              { '@type': 'AdministrativeArea', name: 'Nalasopara' },
+              { '@type': 'AdministrativeArea', name: 'Naigaon' },
+              { '@type': 'AdministrativeArea', name: 'Vasai-Virar' },
+              { '@type': 'AdministrativeArea', name: 'Mumbai' },
+            ],
+            sameAs: [
+              'https://www.linkedin.com/in/synergy-brix-721726433/',
+              'https://www.instagram.com/synergy.brix',
+              'https://wa.me/917972415528',
+            ],
+          },
+          {
+            '@type': 'Service',
+            '@id': `${SITE_URL}/website-development-company-in-vasai#service`,
+            name: 'Website & Software Development Services in Vasai',
+            provider: { '@id': `${SITE_URL}/website-development-company-in-vasai#localbusiness` },
+            description:
+              'Full-stack website development, custom web applications, business automation, CRM systems, and cloud software solutions for businesses in Vasai-Virar.',
+            url: `${SITE_URL}/website-development-company-in-vasai`,
+            areaServed: 'Vasai-Virar',
+            hasOfferCatalog: {
+              '@type': 'OfferCatalog',
+              name: 'Website & Software Development Services',
+              itemListElement: [
+                { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Business Website Development' } },
+                { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Custom Web Applications' } },
+                { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'E-commerce Websites' } },
+                { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Responsive Website Design' } },
+                { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Website Redesign' } },
+                { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Landing Pages' } },
+                { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Website Maintenance' } },
+                { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Custom Software Development' } },
+                { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Business Process Automation' } },
+              ],
+            },
+          },
+          {
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'Does Synergy Brix build websites for businesses in Vasai?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. Synergy Brix is based in Vasai West and works directly with businesses across Vasai, Virar, Nalasopara, Naigaon, and the wider Mumbai Metropolitan Region to design and develop modern, responsive, and high-performance websites.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'What type of websites does Synergy Brix develop?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'We build professional corporate websites, custom web applications, e-commerce storefronts, business portfolios, marketing landing pages, and customer portals tailored to the specific operational and commercial needs of each client.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Can Synergy Brix build custom business software?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. In addition to standard websites, we develop custom business management software, database-driven applications, CRM tools, ERP modules, admin panels, and REST APIs engineered for complex workflows.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Can you automate business processes?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. We help businesses eliminate repetitive manual work by automating inquiry intake, appointment bookings, notification triggers, customer follow-up messages, invoice generation, and cross-system data synchronization.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Do you provide website maintenance?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. We offer comprehensive website maintenance plans that include security updates, performance monitoring, technical bug fixes, regular backups, and content updates to keep your website fast and reliable.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Can you build a CRM or admin dashboard?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. We specialize in custom dashboards and CRM systems that give business owners and management real-time visibility over leads, orders, inventory, and operational metrics.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Do you work with small businesses in Vasai-Virar?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. We actively work with small and medium businesses, local retail shops, professional service firms, and early-stage startups across Vasai-Virar, providing practical, scalable technology solutions.',
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+
+    // 25. Privacy Policy
     {
       path: '/privacy',
       canonical: `${SITE_URL}/privacy`,
@@ -822,7 +968,7 @@ export function getAllRoutesMeta(): RouteMeta[] {
       },
     },
 
-    // 25. Terms & Conditions
+    // 26. Terms & Conditions
     {
       path: '/terms',
       canonical: `${SITE_URL}/terms`,

@@ -59,6 +59,7 @@ import {
   SectionIndex,
 } from './components/premium'
 import ProjectInquiryForm from './components/ProjectInquiryForm'
+import VasaiLandingPage from './pages/VasaiLandingPage'
 
 const ProjectModalContext = createContext<() => void>(() => {})
 
@@ -97,6 +98,7 @@ function App() {
 
 function AppShell() {
   const location = useLocation()
+  const openProjectModal = useOpenProjectModal()
 
   useEffect(() => {
     if (location.pathname === '/' && location.hash) {
@@ -138,6 +140,7 @@ function AppShell() {
               <Route path="/technologies" element={<TechnologiesPage />} />
               <Route path="/insights" element={<InsightsPage />} />
               <Route path="/insights/:slug" element={<InsightDetailPage />} />
+              <Route path="/website-development-company-in-vasai" element={<VasaiLandingPage onOpenProjectModal={openProjectModal} />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faq" element={<FAQPage />} />
               <Route path="/privacy" element={<LegalPage type="privacy" />} />
@@ -1513,7 +1516,13 @@ function AboutPage() {
               </address>
             </div>
             <div className="flex flex-col justify-center text-base leading-7 text-slate-300 sm:text-lg">
-              <p>Synergy Brix is based in Vasai West, Maharashtra, and provides IT services, web development, custom software, AI automation, WhatsApp automation, CRM solutions and cloud solutions for businesses in Vasai, Virar, Mumbai and beyond.</p>
+              <p>
+                Synergy Brix is based in Vasai West, Maharashtra, and provides IT services,{' '}
+                <Link to="/website-development-company-in-vasai" className="text-emerald-300 hover:underline">
+                  website development
+                </Link>
+                , custom software, business automation, CRM solutions and cloud solutions for businesses in Vasai, Virar, Mumbai and beyond.
+              </p>
             </div>
           </div>
         </div>
@@ -1546,6 +1555,21 @@ function ServicesPage() {
           {services.map((service, i) => (
             <ServiceCard key={service.slug} service={service} index={i} />
           ))}
+        </div>
+
+        {/* Vasai Local Services Banner */}
+        <div className="mt-14 rounded-3xl border border-emerald-400/20 bg-gradient-to-r from-emerald-500/10 via-white/2 to-transparent p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div>
+            <div className="font-mono text-xs uppercase tracking-wider text-emerald-300">Local Presence in Vasai-Virar</div>
+            <h3 className="text-lg font-semibold text-white mt-1">Looking for a website or software team in Vasai?</h3>
+            <p className="text-sm text-slate-300 mt-1">We collaborate directly with local businesses across Vasai, Virar, Nalasopara, and Naigaon.</p>
+          </div>
+          <Link
+            to="/website-development-company-in-vasai"
+            className="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-5 py-2.5 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/20 transition shrink-0"
+          >
+            Vasai Web Services <ArrowRight size={14} />
+          </Link>
         </div>
       </Container>
       <CTASection

@@ -418,6 +418,7 @@ export const footerLinks = {
     { label: 'Technology Stack', to: '/technologies' },
     { label: 'Insights & Articles', to: '/insights' },
     { label: 'About Synergy Brix', to: '/about' },
+    { label: 'Vasai Web Development', to: '/website-development-company-in-vasai' },
     { label: 'FAQ', to: '/faq' },
     { label: 'Contact Us', to: '/contact' },
   ],
@@ -434,6 +435,12 @@ export const pageMeta = {
     description:
       'Synergy Brix is a technology and software development company building custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.',
     canonical: `${SITE_URL}/`,
+  },
+  vasaiWebDevelopment: {
+    title: 'Website Development Company in Vasai | Synergy Brix',
+    description:
+      'Synergy Brix is a website and software development company serving businesses in Vasai-Virar with modern websites, web applications, business automation, CRM, APIs and custom software solutions.',
+    canonical: `${SITE_URL}/website-development-company-in-vasai`,
   },
   about: {
     title: 'About Synergy Brix | Technology Partner for Modern Business',
