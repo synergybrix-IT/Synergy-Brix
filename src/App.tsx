@@ -115,7 +115,7 @@ function AppShell() {
     <>
       <Cursor />
       <SpeedInsights />
-      <Preloader />
+      <Preloader skip={location.pathname === '/website-development-company-in-vasai'} />
       <ScrollProgress />
       <Navbar />
       <main>
@@ -2577,21 +2577,21 @@ function Container({ children, className = '' }: { children: React.ReactNode; cl
  * Global UI: Preloader, Scroll progress, hero orbs, scroll indicator
  * ========================================================================= */
 
-function Preloader() {
-  const [hidden, setHidden] = useState(() => sessionStorage.getItem('sb_preloaded') === '1')
+function Preloader({ skip = false }: { skip?: boolean }) {
+  const [hidden, setHidden] = useState(() => skip || sessionStorage.getItem('sb_preloaded') === '1')
 
   useEffect(() => {
-    if (hidden) return
+    if (hidden || skip) return
     const timer = window.setTimeout(() => {
       setHidden(true)
       sessionStorage.setItem('sb_preloaded', '1')
     }, 1100)
     return () => window.clearTimeout(timer)
-  }, [hidden])
+  }, [hidden, skip])
 
   return (
     <AnimatePresence>
-      {!hidden && (
+      {!hidden && !skip && (
         <motion.div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-ink-950"
           initial={{ opacity: 1 }}
