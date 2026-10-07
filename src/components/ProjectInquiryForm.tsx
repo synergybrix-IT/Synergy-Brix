@@ -107,12 +107,28 @@ export default function ProjectInquiryForm({ isOpen, onClose }: ProjectInquiryFo
       const result = await response.json()
 
       if (!response.ok || !result.success) {
-        throw new Error(result?.error || 'Something went wrong. Please try again.')
+        let errMsg = 'Something went wrong. Please try again.'
+        if (result && typeof result === 'object') {
+          if (typeof result.error === 'string') {
+            errMsg = result.error
+          } else if (result.error && typeof result.error === 'object' && 'message' in result.error) {
+            errMsg = String((result.error as { message: unknown }).message)
+          } else if (typeof result.message === 'string') {
+            errMsg = result.message
+          }
+        }
+        throw new Error(errMsg)
       }
 
       setFormState('success')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      const errorMsg =
+        err instanceof Error
+          ? err.message
+          : typeof err === 'object' && err !== null && 'message' in err
+          ? String((err as { message: unknown }).message)
+          : String(err || 'Something went wrong. Please try again.')
+      setError(errorMsg)
       setFormState('error')
     }
   }
