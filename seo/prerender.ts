@@ -81,12 +81,12 @@ export function generatePrerenderedHtml(templateHtml: string, route: RouteMeta):
     }
   }
 
-  // 8. Inject SEO body content as a SIBLING of <div id="root"> so React
-  //    hydration does not wipe it. Googlebot reads the DOM as-is.
+  // 8. Keep the prerendered body as a no-JavaScript fallback. Rendering it
+  //    alongside the React app duplicates the page for users with JavaScript.
   const seoBody = route.seoBody ?? buildSeoBody(route.path, route.title, route.description)
   html = html.replace(
     '<div id="root"></div>',
-    `<div id="root"></div><div id="seo-body" aria-hidden="false">${seoBody}</div><noscript>${seoBody}</noscript>`,
+    `<div id="root"></div><noscript>${seoBody}</noscript>`,
   )
 
   return html
