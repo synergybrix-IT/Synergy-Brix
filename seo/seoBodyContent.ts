@@ -322,7 +322,7 @@ function buildInsights(): string {
 
 function buildInsightDetail(path: string): string {
   const slug = path.replace('/insights/', '')
-  const posts: Record<string, { title: string; content: string[] }> = {
+  const posts: Record<string, { title: string; content: string[]; relatedService?: string; relatedServiceTitle?: string }> = {
     'building-technology-around-business-processes': {
       title: 'Building technology around business processes',
       content: [
@@ -330,6 +330,8 @@ function buildInsightDetail(path: string): string {
         'This is especially important when businesses are dealing with fragmented systems, manual handoffs, or informal processes.',
         'When the process is clear, the technology becomes easier to design, more reliable to implement, and more valuable to the business long term.',
       ],
+      relatedService: '/services/custom-software-development',
+      relatedServiceTitle: 'Custom Software Development',
     },
     'what-makes-an-api-reliable': {
       title: 'What makes an API reliable',
@@ -338,23 +340,32 @@ function buildInsightDetail(path: string): string {
         'Security, observability, and maintainability are not afterthoughts.',
         'When organizations connect systems through well-designed interfaces, they reduce complexity and improve flexibility.',
       ],
+      relatedService: '/services/web-development',
+      relatedServiceTitle: 'Web Application Development',
     },
     'when-dashboards-drive-better-decisions': {
       title: 'When dashboards drive better decisions',
       content: [
-        'A dashboard should not be a dump of every available metric. Its purpose is to help teams understand what is happening quickly.',
-        'Effective dashboards focus on actionable metrics, clear visual hierarchy, and role-specific contexts.',
-        'When organizations replace scattered spreadsheets with focused dashboards, decision speed and awareness improve.',
+        'A dashboard should not be a dump of every available metric. Its purpose is to help teams understand what is happening quickly and take practical action without cognitive overload.',
+        'Effective dashboards focus on actionable metrics, clear visual hierarchy, role-specific contexts, and automated reporting triggers.',
+        'When organizations replace scattered spreadsheets with focused dashboards, decision speed and operational awareness improve noticeably.',
       ],
+      relatedService: '/services/dashboard-development',
+      relatedServiceTitle: 'Dashboard Development',
     },
   }
   const post = posts[slug]
   if (!post) return `<h1>Insight</h1>`
   const paras = post.content.map((p) => `<p>${esc(p)}</p>`).join('')
+  const related = post.relatedService
+    ? `<section><h2>Related Capability</h2><p>Explore how Synergy Brix builds ${esc(post.relatedServiceTitle || 'custom software')} to support this work.</p><a href="${post.relatedService}">Explore ${esc(post.relatedServiceTitle || 'this service')}</a></section>`
+    : ''
   return [
     `<nav aria-label="Breadcrumb"><a href="/">Home</a> &gt; <a href="/insights">Insights</a> &gt; ${esc(post.title)}</nav>`,
     `<h1>${esc(post.title)}</h1>`,
     paras,
+    related,
+    `<p><a href="/insights">Back to all insights</a></p>`,
   ].join('')
 }
 
@@ -370,9 +381,12 @@ function buildAbout(): string {
 function buildContact(): string {
   return [
     `<h1>Contact Synergy Brix</h1>`,
-    `<p>Get in touch with Synergy Brix to discuss your software project, automation idea, web application, or digital technology initiative.</p>`,
+    `<p>Contact Synergy Brix for custom software development, business automation, web applications, CRM, ERP, APIs and IT solutions in Mumbai and Vasai-Virar.</p>`,
+    `<p>Get in touch to discuss your software project, automation idea, web application, or digital technology initiative. Share a few details and we will get back to you with the right next steps.</p>`,
     `<p>Email: <a href="mailto:synergy.brix@gmail.com">synergy.brix@gmail.com</a></p>`,
     `<p>Phone: <a href="tel:+917972415528">+91-79724-15528</a></p>`,
+    `<section><h2>What We Can Help With</h2><ul><li><a href="/services/custom-software-development">Custom Software Development</a></li><li><a href="/services/web-development">Web Application Development</a></li><li><a href="/services/business-automation">Business Automation</a></li><li><a href="/services/dashboard-development">Dashboard Development</a></li><li><a href="/services/saas-development">SaaS Development</a></li><li><a href="/services/cloud-solutions">Cloud Solutions</a></li><li><a href="/services/database-solutions">Database Solutions</a></li></ul></section>`,
+    `<section><h2>Business Solutions</h2><p>CRM, inventory management, customer portals, workflow automation, analytics, document management, scheduling, and internal tools.</p><a href="/solutions">Explore solutions</a></section>`,
     `<a href="/services">View our services</a>`,
   ].join('')
 }

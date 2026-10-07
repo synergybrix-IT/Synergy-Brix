@@ -723,9 +723,9 @@ export function getAllRoutesMeta(): RouteMeta[] {
     {
       path: '/contact',
       canonical: `${SITE_URL}/contact`,
-      title: 'Contact Synergy Brix | Start Your Software Project',
+      title: 'Contact Synergy Brix | Software & IT Solutions',
       description:
-        'Get in touch with Synergy Brix to discuss your software project, automation idea, web application, or digital technology initiative.',
+        'Contact Synergy Brix for custom software development, business automation, web applications, CRM, ERP, APIs and IT solutions in Mumbai and Vasai-Virar.',
       ogType: 'website',
       ogImage: DEFAULT_OG_IMAGE,
       twitterCard: 'summary_large_image',
