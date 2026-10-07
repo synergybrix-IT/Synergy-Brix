@@ -1,3 +1,5 @@
+import { GOOGLE_FORM_FIELD_MAP, GOOGLE_FORM_URL } from '../src/config/googleForms.ts'
+
 interface ContactPayload {
   fullName?: string
   name?: string
@@ -5,8 +7,7 @@ interface ContactPayload {
   businessEmail?: string
   email?: string
   phone?: string
-  businessType?: string
-  services?: string | string[]
+  mainGoal?: string
   budget?: string
   description?: string
   message?: string
@@ -16,19 +17,13 @@ const REQUIRED_FIELDS: Array<{ key: keyof ContactPayload; label: string }> = [
   { key: 'fullName', label: 'Full Name' },
   { key: 'businessEmail', label: 'Business Email' },
   { key: 'phone', label: 'Phone / WhatsApp Number' },
-  { key: 'businessType', label: 'Business Type' },
-  { key: 'services', label: 'Service Required' },
+  { key: 'mainGoal', label: 'Main Goal' },
   { key: 'description', label: 'Project Description' },
 ]
 
 function normalise(data: ContactPayload) {
   const fullName = (data.fullName || data.name || '').trim()
   const email = (data.businessEmail || data.email || '').trim()
-  const services = Array.isArray(data.services)
-    ? data.services
-    : data.services
-      ? [data.services]
-      : []
   const message = (data.description || data.message || '').trim()
 
   return {
@@ -36,32 +31,10 @@ function normalise(data: ContactPayload) {
     company: (data.company || '').trim(),
     businessEmail: email,
     phone: (data.phone || '').trim(),
-    businessType: (data.businessType || '').trim(),
-    services,
+    mainGoal: (data.mainGoal || '').trim(),
     budget: (data.budget || '').trim(),
     description: message,
   }
-}
-
-function buildEmailBody(data: ReturnType<typeof normalise>) {
-  const submittedAt = new Intl.DateTimeFormat('en-IN', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: 'Asia/Kolkata',
-  }).format(new Date())
-
-  return [
-    'New Website Enquiry',
-    '',
-    `Name: ${data.fullName || '-'}`,
-    `Email: ${data.businessEmail || '-'}`,
-    `Phone: ${data.phone || '-'}`,
-    `Company: ${data.company || '-'}`,
-    `Service: ${data.services.join(', ') || '-'}`,
-    `Message: ${data.description || '-'}`,
-    '',
-    `Submitted: ${submittedAt}`,
-  ].join('\n')
 }
 
 function jsonResponse(status: number, body: unknown) {
@@ -88,6 +61,28 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): P
   } finally {
     if (timeoutId) clearTimeout(timeoutId)
   }
+}
+
+function buildGoogleFormBody(data: ReturnType<typeof normalise>): URLSearchParams {
+  const params = new URLSearchParams()
+
+  params.set(GOOGLE_FORM_FIELD_MAP.fullName, data.fullName)
+  params.set(GOOGLE_FORM_FIELD_MAP.businessEmail, data.businessEmail)
+  params.set(GOOGLE_FORM_FIELD_MAP.phone, data.phone)
+  params.set(GOOGLE_FORM_FIELD_MAP.mainGoal, data.mainGoal)
+  params.set(GOOGLE_FORM_FIELD_MAP.description, data.description)
+
+  if (data.company) {
+    params.set(GOOGLE_FORM_FIELD_MAP.company, data.company)
+  }
+  if (data.budget) {
+    params.set(GOOGLE_FORM_FIELD_MAP.budget, data.budget)
+  }
+
+  params.set('fvv', '1')
+  params.set('pageHistory', '0')
+
+  return params
 }
 
 export default async function handler(req: Request) {
@@ -124,46 +119,37 @@ export default async function handler(req: Request) {
     })
   }
 
-  const contactEmail = process.env.CONTACT_EMAIL
-  if (!contactEmail) {
-    console.log('[contact] missing CONTACT_EMAIL')
-    return jsonResponse(500, { success: false, error: 'Server configuration error.' })
-  }
-
-  if (!process.env.RESEND_API_KEY) {
-    console.log('[contact] missing RESEND_API_KEY')
-    return jsonResponse(500, { success: false, error: 'Email service is not configured.' })
-  }
-
   try {
-    console.log('[contact] importing Resend')
-    const { Resend } = await import('resend')
+    console.log('[contact] submitting to Google Forms')
+    const formBody = buildGoogleFormBody(data)
 
-    console.log('[contact] initializing Resend')
-    const resend = new Resend(process.env.RESEND_API_KEY)
-
-    console.log('[contact] sending email')
     const result = await withTimeout(
-      resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || `Synergy Brix <${contactEmail}>`,
-        to: [contactEmail],
-        replyTo: data.businessEmail,
-        subject: `New Website Enquiry — ${data.fullName}`,
-        text: buildEmailBody(data),
+      fetch(GOOGLE_FORM_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBody.toString(),
       }),
-      10000,
-      'Resend send',
+      15000,
+      'Google Forms submit',
     )
 
-    if ((result as { error?: unknown }).error) {
-      console.error('[contact] Resend error', (result as { error: unknown }).error)
-      return jsonResponse(500, { success: false, error: 'Failed to send enquiry. Please try again later.' })
+    console.log('[contact] Google Forms response status:', result.status)
+
+    if (!result.ok) {
+      console.error('[contact] Google Forms returned error status:', result.status)
+      const errorMsg =
+        result.status === 401
+          ? 'Form submission failed: Google Form requires sign-in. Please ensure "Collect email addresses: Do not collect" and "Limit to 1 response: OFF" in Google Form settings.'
+          : 'Failed to send enquiry. Please try again later.'
+      return jsonResponse(502, { success: false, error: errorMsg })
     }
 
-    console.log('[contact] email sent')
+    console.log('[contact] submission successful')
     return jsonResponse(200, { success: true, message: 'Message sent successfully' })
   } catch (error) {
-    console.error('[contact] email failed', error)
+    console.error('[contact] submission failed', error)
     return jsonResponse(500, { success: false, error: 'Unable to send enquiry right now. Please try again.' })
   }
 }

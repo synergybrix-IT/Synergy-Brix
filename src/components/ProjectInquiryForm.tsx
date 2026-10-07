@@ -2,28 +2,6 @@ import { useState, type FormEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, CheckCircle2, Loader2 } from 'lucide-react'
 
-const BUSINESS_TYPES = [
-  'Interior Design',
-  'Real Estate',
-  'Event / Hospitality',
-  'Retail',
-  'Manufacturing',
-  'Professional Services',
-  'Other',
-]
-
-const SERVICE_OPTIONS = [
-  'Business Website',
-  'Web Application',
-  'E-commerce Website',
-  'CRM / ERP',
-  'Business Automation',
-  'Custom Software',
-  'REST API',
-  'Admin Dashboard',
-  'Other',
-]
-
 const BUDGET_OPTIONS = [
   'Below ₹10,000',
   '₹10,000–₹25,000',
@@ -31,6 +9,18 @@ const BUDGET_OPTIONS = [
   '₹50,000–₹1,00,000',
   '₹1,00,000+',
   'Not decided',
+]
+
+const MAIN_GOAL_OPTIONS = [
+  'Custom Software',
+  'Web Application',
+  'Business Website',
+  'Business Automation',
+  'Dashboard / Reporting System',
+  'Cloud Solution',
+  'SaaS Application',
+  'Maintenance / Improvements',
+  'Other',
 ]
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
@@ -45,8 +35,7 @@ interface FormData {
   company: string
   businessEmail: string
   phone: string
-  businessType: string
-  services: string[]
+  mainGoal: string
   budget: string
   description: string
 }
@@ -56,8 +45,7 @@ const initialFormData: FormData = {
   company: '',
   businessEmail: '',
   phone: '',
-  businessType: '',
-  services: [],
+  mainGoal: '',
   budget: '',
   description: '',
 }
@@ -82,8 +70,7 @@ export default function ProjectInquiryForm({ isOpen, onClose }: ProjectInquiryFo
     if (!formData.fullName.trim()) return 'Full name is required.'
     if (!formData.businessEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.businessEmail)) return 'A valid business email is required.'
     if (!formData.phone.trim() || formData.phone.trim().length < 7) return 'A valid phone or WhatsApp number is required.'
-    if (!formData.businessType) return 'Please select a business type.'
-    if (!formData.services.length) return 'Please select at least one service.'
+    if (!formData.mainGoal) return 'Please select a main goal.'
     if (!formData.description.trim() || formData.description.trim().length < 10) return 'Please provide a brief project description (min 10 characters).'
     return null
   }
@@ -130,13 +117,6 @@ export default function ProjectInquiryForm({ isOpen, onClose }: ProjectInquiryFo
     }
   }
 
-  const toggleService = (service: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      services: prev.services.includes(service) ? prev.services.filter((item) => item !== service) : [...prev.services, service],
-    }))
-  }
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -177,7 +157,7 @@ export default function ProjectInquiryForm({ isOpen, onClose }: ProjectInquiryFo
                 <CheckCircle2 className="text-emerald-300" size={48} />
                 <h4 className="text-xl font-semibold text-white">Thank you!</h4>
                 <p className="max-w-md text-sm leading-7 text-slate-300">
-                  Your project request has been received. Our team will contact you shortly.
+                  Thank you! Your project inquiry has been submitted successfully. Our team will review your requirements and get back to you shortly.
                 </p>
                 <button
                   type="button"
@@ -234,50 +214,20 @@ export default function ProjectInquiryForm({ isOpen, onClose }: ProjectInquiryFo
                   </Field>
                 </div>
 
-                <Field label="Business Type *" required>
+                <Field label="What is the main goal of this project? *" required>
                   <select
                     required
-                    value={formData.businessType}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, businessType: e.target.value }))}
+                    value={formData.mainGoal}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, mainGoal: e.target.value }))}
                     className="form-input"
                   >
-                    <option value="">Select business type</option>
-                    {BUSINESS_TYPES.map((type) => (
-                      <option key={type} value={type}>
-                        {type}
+                    <option value="">Select a goal</option>
+                    {MAIN_GOAL_OPTIONS.map((goal) => (
+                      <option key={goal} value={goal}>
+                        {goal}
                       </option>
                     ))}
                   </select>
-                </Field>
-
-                <Field label="Service Required *" required>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {SERVICE_OPTIONS.map((service) => (
-                      <label
-                        key={service}
-                        className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${
-                          formData.services.includes(service)
-                            ? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200'
-                            : 'border-white/8 bg-white/3 text-slate-300 hover:border-white/20 hover:text-white'
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          className="hidden"
-                          checked={formData.services.includes(service)}
-                          onChange={() => toggleService(service)}
-                        />
-                        <span
-                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-md border ${
-                            formData.services.includes(service) ? 'border-emerald-400 bg-emerald-500' : 'border-white/20 bg-white/5'
-                          }`}
-                        >
-                          {formData.services.includes(service) && <CheckCircle2 size={12} className="text-white" />}
-                        </span>
-                        {service}
-                      </label>
-                    ))}
-                  </div>
                 </Field>
 
                 <Field label="Approximate Budget">
