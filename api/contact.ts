@@ -37,13 +37,47 @@ function normalise(data: ContactPayload) {
   }
 }
 
-function jsonResponse(status: number, body: unknown) {
+interface NodeServerlessResponse {
+  status: (code: number) => NodeServerlessResponse
+  json: (data: unknown) => void
+  setHeader: (name: string, value: string) => void
+  end: (data?: unknown) => void
+}
+
+interface NodeServerlessRequest {
+  method?: string
+  body?: unknown
+  headers?: Record<string, string | string[] | undefined>
+  json?: () => Promise<unknown>
+}
+
+function sendResponse(status: number, body: unknown, res?: NodeServerlessResponse) {
+  if (res && typeof res.status === 'function' && typeof res.json === 'function') {
+    res.status(status).json(body)
+    return
+  }
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       'Content-Type': 'application/json',
     },
   })
+}
+
+async function parseBody<T>(req: Request | NodeServerlessRequest): Promise<T> {
+  if (typeof (req as Request).json === 'function') {
+    return (await (req as Request).json()) as T
+  }
+  const nodeReq = req as NodeServerlessRequest
+  if (nodeReq.body) {
+    if (typeof nodeReq.body === 'string') {
+      return JSON.parse(nodeReq.body) as T
+    }
+    if (typeof nodeReq.body === 'object') {
+      return nodeReq.body as T
+    }
+  }
+  throw new Error('No valid body provided')
 }
 
 async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
@@ -85,22 +119,23 @@ function buildGoogleFormBody(data: ReturnType<typeof normalise>): URLSearchParam
   return params
 }
 
-export default async function handler(req: Request) {
+export default async function handler(req: Request | NodeServerlessRequest, res?: NodeServerlessResponse) {
   console.log('[contact] function started')
-  console.log('[contact] method:', req.method)
+  const method = req.method || 'GET'
+  console.log('[contact] method:', method)
 
-  if (req.method !== 'POST') {
+  if (method !== 'POST') {
     console.log('[contact] rejecting non-POST')
-    return jsonResponse(405, { success: false, error: 'Method not allowed.' })
+    return sendResponse(405, { success: false, error: 'Method not allowed.' }, res)
   }
 
   console.log('[contact] parsing request')
   let raw: ContactPayload
   try {
-    raw = (await req.json()) as ContactPayload
+    raw = await parseBody<ContactPayload>(req)
   } catch {
     console.log('[contact] invalid json')
-    return jsonResponse(400, { success: false, error: 'Invalid request body.' })
+    return sendResponse(400, { success: false, error: 'Invalid request body.' }, res)
   }
 
   const data = normalise(raw)
@@ -113,10 +148,14 @@ export default async function handler(req: Request) {
 
   if (missing.length > 0) {
     console.log('[contact] missing fields:', missing.map((f) => f.label))
-    return jsonResponse(400, {
-      success: false,
-      error: `Missing required fields: ${missing.map((field) => field.label).join(', ')}.`,
-    })
+    return sendResponse(
+      400,
+      {
+        success: false,
+        error: `Missing required fields: ${missing.map((field) => field.label).join(', ')}.`,
+      },
+      res,
+    )
   }
 
   try {
@@ -143,13 +182,17 @@ export default async function handler(req: Request) {
         result.status === 401
           ? 'Form submission failed: Google Form requires sign-in. Please ensure "Collect email addresses: Do not collect" and "Limit to 1 response: OFF" in Google Form settings.'
           : 'Failed to send enquiry. Please try again later.'
-      return jsonResponse(502, { success: false, error: errorMsg })
+      return sendResponse(502, { success: false, error: errorMsg }, res)
     }
 
     console.log('[contact] submission successful')
-    return jsonResponse(200, { success: true, message: 'Message sent successfully' })
+    return sendResponse(200, { success: true, message: 'Message sent successfully' }, res)
   } catch (error) {
     console.error('[contact] submission failed', error)
-    return jsonResponse(500, { success: false, error: 'Unable to send enquiry right now. Please try again.' })
+    return sendResponse(
+      500,
+      { success: false, error: 'Unable to send enquiry right now. Please try again.' },
+      res,
+    )
   }
 }
