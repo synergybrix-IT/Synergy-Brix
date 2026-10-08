@@ -520,6 +520,57 @@ select.form-input {
   background-size: 1rem;
   padding-right: 2.5rem;
 }
+.goal-select {
+  cursor: pointer;
+  padding-right: 1rem;
+}
+.goal-select-open {
+  border-color: rgba(52, 211, 153, 0.5);
+}
+.goal-select-chevron {
+  flex: none;
+  color: #94a3b8;
+  transition: transform 180ms ease, color 180ms ease;
+}
+.goal-select-open .goal-select-chevron {
+  color: #34d399;
+}
+.goal-select-menu {
+  position: fixed;
+  z-index: 100;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 0.75rem;
+  background: #0c1412;
+  padding: 0.35rem;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.025);
+  -webkit-overflow-scrolling: touch;
+}
+.goal-select-option {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.goal-select-option-active {
+  background: rgba(16, 185, 129, 0.16);
+  color: #ecfdf5;
+}
+.goal-select-option-selected {
+  color: #a7f3d0;
+}
+.goal-select-option-selected svg {
+  flex: none;
+  color: #34d399;
+}
 textarea.form-input {
   min-height: 120px;
 }

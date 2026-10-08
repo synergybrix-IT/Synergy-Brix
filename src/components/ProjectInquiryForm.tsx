@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, CheckCircle2, Loader2 } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import { Check, CheckCircle2, ChevronDown, Loader2, X } from 'lucide-react'
 
 const BUDGET_OPTIONS = [
   'Below ₹10,000',
@@ -48,6 +49,194 @@ const initialFormData: FormData = {
   mainGoal: '',
   budget: '',
   description: '',
+}
+
+interface GoalDropdownProps {
+  value: string
+  onChange: (value: string) => void
+  options: string[]
+  placeholder: string
+  label: string
+  required?: boolean
+}
+
+function GoalDropdown({ value, onChange, options, placeholder, label, required = false }: GoalDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(() => options.indexOf(value))
+  const [menuPosition, setMenuPosition] = useState({ left: 0, width: 0, top: 0, maxHeight: 320, openAbove: false })
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLUListElement>(null)
+  const listboxId = useId()
+  const selectedIndex = options.indexOf(value)
+
+  useLayoutEffect(() => {
+    if (!isOpen || !triggerRef.current) return
+
+    const updateMenuPosition = () => {
+      const rect = triggerRef.current?.getBoundingClientRect()
+      if (!rect) return
+
+      const viewportPadding = 12
+      const gap = 8
+      const below = window.innerHeight - rect.bottom - viewportPadding - gap
+      const above = rect.top - viewportPadding - gap
+      const openAbove = below < 200 && above > below
+      const availableHeight = Math.max(100, openAbove ? above : below)
+      const maxHeight = Math.min(320, availableHeight)
+
+      setMenuPosition({
+        left: rect.left,
+        width: rect.width,
+        top: openAbove ? rect.top - gap - maxHeight : rect.bottom + gap,
+        maxHeight,
+        openAbove,
+      })
+    }
+
+    updateMenuPosition()
+    window.addEventListener('resize', updateMenuPosition)
+    window.addEventListener('scroll', updateMenuPosition, true)
+    return () => {
+      window.removeEventListener('resize', updateMenuPosition)
+      window.removeEventListener('scroll', updateMenuPosition, true)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (isOpen) {
+      menuRef.current?.children.item(activeIndex)?.scrollIntoView({ block: 'nearest' })
+    }
+  }, [activeIndex, isOpen])
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      const target = event.target
+      if (
+        target instanceof Node &&
+        !triggerRef.current?.contains(target) &&
+        !menuRef.current?.contains(target)
+      ) {
+        setIsOpen(false)
+      }
+    }
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setIsOpen(false)
+        triggerRef.current?.focus()
+      }
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [isOpen])
+
+  const openAt = (index: number) => {
+    setActiveIndex(index < 0 ? 0 : index)
+    setIsOpen(true)
+  }
+
+  const selectOption = (option: string) => {
+    onChange(option)
+    setIsOpen(false)
+    triggerRef.current?.focus()
+  }
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault()
+      const direction = event.key === 'ArrowDown' ? 1 : -1
+      if (!isOpen) {
+        openAt(selectedIndex >= 0 ? selectedIndex : direction > 0 ? 0 : options.length - 1)
+      } else {
+        setActiveIndex((current) => (current + direction + options.length) % options.length)
+      }
+    } else if ((event.key === 'Enter' || event.key === ' ') && isOpen) {
+      event.preventDefault()
+      const option = options[activeIndex]
+      if (option !== undefined) selectOption(option)
+    } else if ((event.key === 'Enter' || event.key === ' ') && !isOpen) {
+      event.preventDefault()
+      openAt(selectedIndex >= 0 ? selectedIndex : 0)
+    } else if (event.key === 'Escape' && isOpen) {
+      event.preventDefault()
+      setIsOpen(false)
+    }
+  }
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        role="combobox"
+        aria-label={label}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-controls={listboxId}
+        aria-activedescendant={isOpen ? `${listboxId}-option-${activeIndex}` : undefined}
+        aria-required={required}
+        onClick={() => {
+          if (isOpen) {
+            setIsOpen(false)
+          } else {
+            openAt(selectedIndex >= 0 ? selectedIndex : 0)
+          }
+        }}
+        onKeyDown={handleKeyDown}
+        className={`form-input goal-select flex items-center justify-between text-left ${isOpen ? 'goal-select-open' : ''}`}
+      >
+        <span className={value ? 'text-slate-100' : 'text-slate-400'}>{value || placeholder}</span>
+        <ChevronDown size={17} aria-hidden="true" className={`goal-select-chevron ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      {createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.ul
+              ref={menuRef}
+              id={listboxId}
+              role="listbox"
+              aria-label={label}
+              className="goal-select-menu"
+              style={{
+                left: menuPosition.left,
+                width: menuPosition.width,
+                top: menuPosition.top,
+                maxHeight: menuPosition.maxHeight,
+              }}
+              initial={{ opacity: 0, y: menuPosition.openAbove ? 6 : -6, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: menuPosition.openAbove ? 6 : -6, scale: 0.99 }}
+              transition={{ duration: 0.17, ease: 'easeOut' }}
+            >
+              {options.map((option, index) => (
+                <li
+                  key={option || placeholder}
+                  id={`${listboxId}-option-${index}`}
+                  role="option"
+                  aria-selected={value === option}
+                  className={`goal-select-option ${activeIndex === index ? 'goal-select-option-active' : ''} ${value === option ? 'goal-select-option-selected' : ''}`}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => selectOption(option)}
+                >
+                  <span>{option || placeholder}</span>
+                  {value === option && <Check size={16} aria-hidden="true" />}
+                </li>
+              ))}
+            </motion.ul>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
+    </>
+  )
 }
 
 export default function ProjectInquiryForm({ isOpen, onClose }: ProjectInquiryFormProps) {
@@ -231,34 +420,24 @@ export default function ProjectInquiryForm({ isOpen, onClose }: ProjectInquiryFo
                 </div>
 
                 <Field label="What is the main goal of this project? *" required>
-                  <select
-                    required
+                  <GoalDropdown
                     value={formData.mainGoal}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, mainGoal: e.target.value }))}
-                    className="form-input"
-                  >
-                    <option value="">Select a goal</option>
-                    {MAIN_GOAL_OPTIONS.map((goal) => (
-                      <option key={goal} value={goal}>
-                        {goal}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(mainGoal) => setFormData((prev) => ({ ...prev, mainGoal }))}
+                    options={['', ...MAIN_GOAL_OPTIONS]}
+                    placeholder="Select a goal"
+                    label="What is the main goal of this project?"
+                    required
+                  />
                 </Field>
 
                 <Field label="Approximate Budget">
-                  <select
+                  <GoalDropdown
                     value={formData.budget}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, budget: e.target.value }))}
-                    className="form-input"
-                  >
-                    <option value="">Select budget range</option>
-                    {BUDGET_OPTIONS.map((budget) => (
-                      <option key={budget} value={budget}>
-                        {budget}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(budget) => setFormData((prev) => ({ ...prev, budget }))}
+                    options={['', ...BUDGET_OPTIONS]}
+                    placeholder="Select budget range"
+                    label="Approximate Budget"
+                  />
                 </Field>
 
                 <Field label="Project Description *" required>
