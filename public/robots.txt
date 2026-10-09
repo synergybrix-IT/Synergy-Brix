@@ -3,4 +3,6 @@ Allow: /
 
 Disallow: /404
 
+# llms.txt: https://www.synergybrix.com/llms.txt
+
 Sitemap: https://www.synergybrix.com/sitemap.xml

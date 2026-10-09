@@ -33,6 +33,7 @@ import {
   companyValues,
   footerLinks,
   faqs,
+  serviceFaqs,
   homeProblems,
   homeSolutions,
   industries,
@@ -41,6 +42,7 @@ import {
   solutions,
 } from './data/siteData'
 import { SITE_URL } from './config/siteUrl'
+import { HOME_JSON_LD } from './data/siteStructuredData'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { Analytics } from '@vercel/analytics/react'
 import { usePageMeta } from './hooks/usePageMeta'
@@ -552,44 +554,13 @@ function Footer() {
 
 const HERO_PILLARS = ['Custom software', 'Automation', 'APIs', 'Cloud', 'Dashboards']
 
-function HomeJsonLd() {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${SITE_URL}/#organization`,
-        name: 'Synergy Brix',
-        url: SITE_URL,
-        logo: {
-          '@type': 'ImageObject',
-          url: `${SITE_URL}/logo.png`,
-        },
-        description:
-          'Synergy Brix is a technology and software development company building custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.',
-        sameAs: ['https://www.linkedin.com/in/synergy-brix-721726433/', 'https://www.instagram.com/synergy.brix'],
-      },
-      {
-        '@type': 'WebSite',
-        '@id': `${SITE_URL}/#website`,
-        name: 'Synergy Brix',
-        url: SITE_URL,
-        publisher: { '@id': `${SITE_URL}/#organization` },
-      },
-    ],
-  }
-
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-}
-
 function HomePage() {
-  usePageMeta(pageMeta.home)
+  usePageMeta({ ...pageMeta.home, jsonLd: HOME_JSON_LD })
   const openProjectModal = useOpenProjectModal()
 
   return (
     <>
       <Hero />
-      <HomeJsonLd />
       <Marquee
         items={[
           'Custom Software',
@@ -603,6 +574,32 @@ function HomePage() {
         ]}
         className="border-y border-white/6 bg-ink-950 py-5"
       />
+      <section className="border-b border-white/6 bg-ink-900 py-16 sm:py-20">
+        <Container>
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+            <div>
+              <SectionIndex index="00" label="Company overview" />
+              <h2 className="mt-5 text-3xl font-semibold tracking-tightest text-white sm:text-4xl">
+                What does Synergy Brix build?
+              </h2>
+            </div>
+            <div className="space-y-4 text-base leading-7 text-slate-300">
+              <p>
+                Synergy Brix is a software and digital solutions company based in Vasai West, Maharashtra. We build
+                business websites, custom web applications, APIs, workflow automation, dashboards, SaaS products, and
+                database-backed tools around the way an organization works.
+              </p>
+              <p>
+                Our team works with businesses in Vasai-Virar, Mumbai, and beyond. Projects begin by understanding the
+                business goal and existing process, then agreeing on scope, implementation, testing, and deployment.
+                Explore our <Link to="/services" className="text-emerald-300 hover:text-emerald-200">software development services</Link>,
+                <Link to="/work" className="ml-1 text-emerald-300 hover:text-emerald-200">selected project work</Link>, or
+                <Link to="/about" className="ml-1 text-emerald-300 hover:text-emerald-200">company and team information</Link>.
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
       <WhyChoose />
       <ServicesSpotlight />
       <ProblemsSection />
@@ -779,7 +776,7 @@ function Hero() {
               variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.1 } } }}
               className="mt-4 max-w-xl text-sm leading-6 text-slate-400"
             >
-              Synergy Brix is a technology and software development company specializing in custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.
+              Synergy Brix is a software and digital solutions company based in Vasai West, Maharashtra. We build custom web applications, business automation, dashboards, APIs, and scalable digital products.
             </motion.p>
 
             <motion.div
@@ -1417,7 +1414,16 @@ function FAQPreview() {
  * ========================================================================= */
 
 function AboutPage() {
-  usePageMeta(pageMeta.about)
+  usePageMeta({
+    ...pageMeta.about,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'AboutPage',
+      name: 'About Synergy Brix',
+      url: pageMeta.about.canonical,
+      mainEntity: { '@id': `${SITE_URL}/#organization` },
+    },
+  })
   const founders = [
     {
       name: 'Nikhil Asuri',
@@ -1536,7 +1542,28 @@ function AboutPage() {
 }
 
 function ServicesPage() {
-  usePageMeta(pageMeta.services)
+  usePageMeta({
+    ...pageMeta.services,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+            { '@type': 'ListItem', position: 2, name: 'Services' },
+          ],
+        },
+        {
+          '@type': 'Service',
+          name: 'Software Development Services',
+          provider: { '@id': `${SITE_URL}/#organization` },
+          description: 'Software engineering, web application development, automation, and cloud solutions.',
+          url: pageMeta.services.canonical,
+        },
+      ],
+    },
+  })
   const openProjectModal = useOpenProjectModal()
   return (
     <div className="bg-ink-950">
@@ -1594,6 +1621,28 @@ function ServiceDetailPage() {
     description: service ? service.short : 'The page you requested could not be found.',
     canonical: service ? `${SITE_URL}/services/${service.slug}` : `${SITE_URL}/404`,
     robots: service ? 'index, follow' : 'noindex, nofollow',
+    jsonLd: service
+      ? {
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+                { '@type': 'ListItem', position: 2, name: 'Services', item: `${SITE_URL}/services` },
+                { '@type': 'ListItem', position: 3, name: service.title },
+              ],
+            },
+            {
+              '@type': 'Service',
+              name: service.title,
+              provider: { '@id': `${SITE_URL}/#organization` },
+              description: service.solution,
+              url: `${SITE_URL}/services/${service.slug}`,
+            },
+          ],
+        }
+      : undefined,
   })
 
   if (!service) return <NotFoundPage />
@@ -1644,6 +1693,24 @@ function ServiceDetailPage() {
             </div>
           </div>
         </div>
+        <section className="mt-16 border-t border-white/8 pt-12">
+          <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+            Questions about {service.title.toLowerCase()}
+          </h2>
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            {serviceFaqs[service.slug].map((faq) => (
+              <article key={faq.question} className="rounded-2xl border border-white/8 bg-white/3 p-6">
+                <h3 className="text-lg font-semibold text-white">{faq.question}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-300">{faq.answer}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mt-6 text-sm leading-7 text-slate-400">
+            Our process moves from discovery and planning through design, development, testing, and deployment.{' '}
+            <Link to="/process" className="text-emerald-300 hover:text-emerald-200">See how projects are delivered</Link>
+            {' '}or explore <Link to="/work" className="text-emerald-300 hover:text-emerald-200">selected project work</Link>.
+          </p>
+        </section>
       </Container>
     </div>
   )
@@ -1806,6 +1873,28 @@ function CaseStudyPage() {
     canonical: item ? `${SITE_URL}/work/${item.slug}` : `${SITE_URL}/404`,
     robots: item ? 'index, follow' : 'noindex, nofollow',
     ogType: 'article',
+    jsonLd: item
+      ? {
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+                { '@type': 'ListItem', position: 2, name: 'Work', item: `${SITE_URL}/work` },
+                { '@type': 'ListItem', position: 3, name: item.title },
+              ],
+            },
+            {
+              '@type': 'CreativeWork',
+              name: item.title,
+              description: item.overview,
+              creator: { '@id': `${SITE_URL}/#organization` },
+              url: `${SITE_URL}/work/${item.slug}`,
+            },
+          ],
+        }
+      : undefined,
   })
   if (!item) return <NotFoundPage />
 
@@ -1978,6 +2067,30 @@ function InsightDetailPage() {
     canonical: post ? `${SITE_URL}/insights/${post.slug}` : `${SITE_URL}/404`,
     robots: post ? 'index, follow' : 'noindex, nofollow',
     ogType: 'article',
+    jsonLd: post
+      ? {
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+                { '@type': 'ListItem', position: 2, name: 'Insights', item: `${SITE_URL}/insights` },
+                { '@type': 'ListItem', position: 3, name: post.title },
+              ],
+            },
+            {
+              '@type': 'BlogPosting',
+              headline: post.title,
+              description: post.excerpt,
+              author: { '@id': `${SITE_URL}/#organization` },
+              publisher: { '@id': `${SITE_URL}/#organization` },
+              mainEntityOfPage: `${SITE_URL}/insights/${post.slug}`,
+              url: `${SITE_URL}/insights/${post.slug}`,
+            },
+          ],
+        }
+      : undefined,
   })
   if (!post) return <NotFoundPage />
   return (
@@ -1991,10 +2104,32 @@ function InsightDetailPage() {
       <Container className="pb-24 lg:pb-32">
         <article className="mx-auto max-w-3xl glass-panel rounded-3xl p-8 sm:p-12">
           <div className="space-y-6 text-sm leading-8 text-slate-300 sm:text-lg sm:leading-9">
+            <p className="font-mono text-xs uppercase tracking-[0.16em] text-emerald-300/80">
+              By <Link to="/about" className="hover:text-emerald-200">Synergy Brix</Link>
+            </p>
             {post.content.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          {post.references && post.references.length > 0 && (
+            <section className="mt-10 border-t border-white/10 pt-8">
+              <h2 className="text-sm font-semibold text-white">Further reading</h2>
+              <ul className="mt-3 space-y-2 text-sm">
+                {post.references.map((reference) => (
+                  <li key={reference.url}>
+                    <a
+                      href={reference.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-300 underline decoration-emerald-300/30 underline-offset-4 hover:text-emerald-200"
+                    >
+                      {reference.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {post.relatedServiceSlug && post.relatedServiceTitle && (
             <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center">
@@ -2019,7 +2154,16 @@ function InsightDetailPage() {
 }
 
 function ContactPage() {
-  usePageMeta(pageMeta.contact)
+  usePageMeta({
+    ...pageMeta.contact,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'ContactPage',
+      name: 'Contact Synergy Brix',
+      url: pageMeta.contact.canonical,
+      mainEntity: { '@id': `${SITE_URL}/#organization` },
+    },
+  })
   const openProjectModal = useOpenProjectModal()
   return (
     <section className="surface-canvas relative overflow-hidden pt-32 pb-20 lg:pt-44 lg:pb-28">
@@ -2051,7 +2195,8 @@ function ContactPage() {
           </motion.div>
           <motion.div variants={fadeIn} className="mt-12 grid gap-3 sm:grid-cols-2">
             <ContactInfoCard icon={<Mail size={16} />} label="Email" value="synergy.brix@gmail.com" href="mailto:synergy.brix@gmail.com" />
-            <ContactInfoCard icon={<MapPin size={16} />} label="Location" value="India • Remote-ready" />
+            <ContactInfoCard icon={<MapPin size={16} />} label="Location" value="Vasai West, Maharashtra • Remote-ready" />
+            <ContactInfoCard icon={<Phone size={16} />} label="Phone" value="+91 79724 15528" href="tel:+917972415528" />
             <ContactInfoCard icon={<FaLinkedinIn size={14} />} label="LinkedIn" value="Connect on LinkedIn" href="https://www.linkedin.com/in/synergy-brix-721726433/" />
             <ContactInfoCard icon={<FaInstagram size={14} />} label="Instagram" value="Follow on Instagram" href="https://www.instagram.com/synergy.brix" />
           </motion.div>
@@ -2172,7 +2317,29 @@ function ContactNetwork() {
 }
 
 function FAQPage() {
-  usePageMeta(pageMeta.faq)
+  usePageMeta({
+    ...pageMeta.faq,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+            { '@type': 'ListItem', position: 2, name: 'FAQ' },
+          ],
+        },
+        {
+          '@type': 'FAQPage',
+          mainEntity: faqs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+          })),
+        },
+      ],
+    },
+  })
   const [openIdx, setOpenIdx] = useState(0)
   return (
     <div className="bg-ink-950">
@@ -2227,13 +2394,11 @@ function LegalPage({ type }: { type: 'privacy' | 'terms' }) {
   const content = {
     privacy: {
       title: 'Privacy Policy',
-      description:
-        'This privacy policy is a placeholder for future legal review and should be customized to the final company operating model and jurisdiction.',
+      description: 'Privacy policy placeholder pending legal review by Synergy Brix.',
     },
     terms: {
       title: 'Terms & Conditions',
-      description:
-        'These terms and conditions are a placeholder for legal review and should be refined to reflect the actual service offering, scope of work, and commercial terms.',
+      description: 'Terms and conditions placeholder pending legal review by Synergy Brix.',
     },
   }[type]
 
@@ -2241,6 +2406,7 @@ function LegalPage({ type }: { type: 'privacy' | 'terms' }) {
     title: `${content.title} | Synergy Brix`,
     description: content.description,
     canonical: `${SITE_URL}/${type === 'privacy' ? 'privacy' : 'terms'}`,
+    robots: 'noindex, follow',
   })
 
   return (

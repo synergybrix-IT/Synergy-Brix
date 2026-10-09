@@ -73,6 +73,8 @@ Allow: /
 
 Disallow: /404
 
+# llms.txt: ${baseUrl}/llms.txt
+
 Sitemap: ${baseUrl}/sitemap.xml
 `
 }

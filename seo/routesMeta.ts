@@ -1,4 +1,6 @@
 import { SITE_URL } from './siteUrl.ts'
+import { faqs, vasaiFaqs } from '../src/data/siteData.ts'
+import { ORGANIZATION_SCHEMA, WEBSITE_SCHEMA } from '../src/data/siteStructuredData.ts'
 
 export interface RouteMeta {
   path: string
@@ -16,48 +18,6 @@ export interface RouteMeta {
 }
 
 const DEFAULT_OG_IMAGE = `${SITE_URL}/logo.png`
-
-export const ORGANIZATION_SCHEMA = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': `${SITE_URL}/#organization`,
-  name: 'Synergy Brix',
-  url: SITE_URL,
-  logo: {
-    '@type': 'ImageObject',
-    url: DEFAULT_OG_IMAGE,
-  },
-  description:
-    'Synergy Brix is a technology and software development company building custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.',
-  sameAs: [
-    'https://www.linkedin.com/in/synergy-brix-721726433/',
-    'https://www.instagram.com/synergy.brix',
-    'https://wa.me/917972415528',
-  ],
-  contactPoint: {
-    '@type': 'ContactPoint',
-    telephone: '+91-79724-15528',
-    contactType: 'customer service',
-    availableLanguage: ['English', 'Hindi'],
-  },
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'Gonsalves Property, Near Alphonso Church, Behind Stella Petrol Pump',
-    addressLocality: 'Vasai West',
-    addressRegion: 'Maharashtra',
-    postalCode: '401202',
-    addressCountry: 'India',
-  },
-}
-
-export const WEBSITE_SCHEMA = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  '@id': `${SITE_URL}/#website`,
-  name: 'Synergy Brix',
-  url: SITE_URL,
-  publisher: { '@id': `${SITE_URL}/#organization` },
-}
 
 function makeBreadcrumbs(items: { name: string; path?: string }[]) {
   return {
@@ -85,7 +45,7 @@ export function getAllRoutesMeta(): RouteMeta[] {
       canonical: `${SITE_URL}/`,
       title: 'Synergy Brix | Software Development & Technology Solutions',
       description:
-        'Synergy Brix is a technology and software development company building custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.',
+        'Software development in Vasai-Virar and Mumbai: Synergy Brix builds custom web applications, business automation, APIs, dashboards, SaaS products, and digital systems.',
       ogType: 'website',
       ogImage: DEFAULT_OG_IMAGE,
       twitterCard: 'summary_large_image',
@@ -610,8 +570,6 @@ export function getAllRoutesMeta(): RouteMeta[] {
             headline: 'Building Technology Around Business Processes',
             description:
               'Successful software starts with a clear understanding of how work actually happens inside an organization.',
-            datePublished: '2026-06-01T00:00:00+00:00',
-            dateModified: '2026-06-01T00:00:00+00:00',
             author: { '@id': `${SITE_URL}/#organization` },
             publisher: { '@id': `${SITE_URL}/#organization` },
             url: `${SITE_URL}/insights/building-technology-around-business-processes`,
@@ -646,8 +604,6 @@ export function getAllRoutesMeta(): RouteMeta[] {
             headline: 'What Makes an API Reliable',
             description:
               'Reliable APIs are not just technically sound—they are predictable, secure, and easy to integrate over time.',
-            datePublished: '2026-05-01T00:00:00+00:00',
-            dateModified: '2026-05-01T00:00:00+00:00',
             author: { '@id': `${SITE_URL}/#organization` },
             publisher: { '@id': `${SITE_URL}/#organization` },
             url: `${SITE_URL}/insights/what-makes-an-api-reliable`,
@@ -682,8 +638,6 @@ export function getAllRoutesMeta(): RouteMeta[] {
             headline: 'When Dashboards Drive Better Decisions',
             description:
               'A good dashboard does not overwhelm teams—it highlights the right signals and supports practical business action.',
-            datePublished: '2026-04-01T00:00:00+00:00',
-            dateModified: '2026-04-01T00:00:00+00:00',
             author: { '@id': `${SITE_URL}/#organization` },
             publisher: { '@id': `${SITE_URL}/#organization` },
             url: `${SITE_URL}/insights/when-dashboards-drive-better-decisions`,
@@ -765,32 +719,14 @@ export function getAllRoutesMeta(): RouteMeta[] {
           makeBreadcrumbs([{ name: 'Home', path: '/' }, { name: 'FAQ' }]),
           {
             '@type': 'FAQPage',
-            mainEntity: [
-              {
-                '@type': 'Question',
-                name: 'What services does Synergy Brix provide?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Synergy Brix provides custom software development, web application engineering, business automation, dashboard and reporting systems, SaaS platform development, cloud architecture, and database solutions.',
-                },
+            mainEntity: faqs.map((faq) => ({
+              '@type': 'Question',
+              name: faq.question,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: faq.answer,
               },
-              {
-                '@type': 'Question',
-                name: 'How do we get started with a project?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'We begin with an initial discovery discussion to understand your business objectives, operational workflows, and technology requirements before outlining a structured proposal and timeline.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Can you integrate with our existing tools and databases?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Yes. We specialize in API design, third-party integrations, and database connectivity to unify disconnected tools and eliminate repetitive manual handoffs.',
-                },
-              },
-            ],
+            })),
           },
         ],
       },
@@ -827,7 +763,6 @@ export function getAllRoutesMeta(): RouteMeta[] {
               'Synergy Brix is a website and software development company serving businesses in Vasai-Virar with modern websites, web applications, business automation, CRM, APIs and custom software solutions.',
             telephone: '+91-79724-15528',
             email: 'synergy.brix@gmail.com',
-            priceRange: '₹₹',
             address: {
               '@type': 'PostalAddress',
               streetAddress: 'Gonsalves Property, Near Alphonso Church, Behind Stella Petrol Pump',
@@ -879,64 +814,11 @@ export function getAllRoutesMeta(): RouteMeta[] {
           },
           {
             '@type': 'FAQPage',
-            mainEntity: [
-              {
-                '@type': 'Question',
-                name: 'Does Synergy Brix build websites for businesses in Vasai?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Yes. Synergy Brix is based in Vasai West and works directly with businesses across Vasai, Virar, Nalasopara, Naigaon, and the wider Mumbai Metropolitan Region to design and develop modern, responsive, and high-performance websites.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'What type of websites does Synergy Brix develop?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'We build professional corporate websites, custom web applications, e-commerce storefronts, business portfolios, marketing landing pages, and customer portals tailored to the specific operational and commercial needs of each client.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Can Synergy Brix build custom business software?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Yes. In addition to standard websites, we develop custom business management software, database-driven applications, CRM tools, ERP modules, admin panels, and REST APIs engineered for complex workflows.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Can you automate business processes?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Yes. We help businesses eliminate repetitive manual work by automating inquiry intake, appointment bookings, notification triggers, customer follow-up messages, invoice generation, and cross-system data synchronization.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Do you provide website maintenance?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Yes. We offer comprehensive website maintenance plans that include security updates, performance monitoring, technical bug fixes, regular backups, and content updates to keep your website fast and reliable.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Can you build a CRM or admin dashboard?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Yes. We specialize in custom dashboards and CRM systems that give business owners and management real-time visibility over leads, orders, inventory, and operational metrics.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Do you work with small businesses in Vasai-Virar?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Yes. We actively work with small and medium businesses, local retail shops, professional service firms, and early-stage startups across Vasai-Virar, providing practical, scalable technology solutions.',
-                },
-              },
-            ],
+            mainEntity: vasaiFaqs.map((faq) => ({
+              '@type': 'Question',
+              name: faq.q,
+              acceptedAnswer: { '@type': 'Answer', text: faq.a },
+            })),
           },
         ],
       },
@@ -947,12 +829,11 @@ export function getAllRoutesMeta(): RouteMeta[] {
       path: '/privacy',
       canonical: `${SITE_URL}/privacy`,
       title: 'Privacy Policy | Synergy Brix',
-      description:
-        'Read the Synergy Brix privacy policy detailing data handling practices, security commitments, and operational privacy guidelines.',
+      description: 'Privacy policy placeholder pending legal review by Synergy Brix.',
       ogType: 'website',
       ogImage: DEFAULT_OG_IMAGE,
       twitterCard: 'summary_large_image',
-      robots: 'index, follow',
+      robots: 'noindex, follow',
       changeFrequency: 'yearly',
       priority: 0.3,
       jsonLd: {
@@ -973,12 +854,11 @@ export function getAllRoutesMeta(): RouteMeta[] {
       path: '/terms',
       canonical: `${SITE_URL}/terms`,
       title: 'Terms & Conditions | Synergy Brix',
-      description:
-        'Read the Synergy Brix terms and conditions regarding software development services, project scopes, intellectual property, and service agreements.',
+      description: 'Terms and conditions placeholder pending legal review by Synergy Brix.',
       ogType: 'website',
       ogImage: DEFAULT_OG_IMAGE,
       twitterCard: 'summary_large_image',
-      robots: 'index, follow',
+      robots: 'noindex, follow',
       changeFrequency: 'yearly',
       priority: 0.3,
       jsonLd: {

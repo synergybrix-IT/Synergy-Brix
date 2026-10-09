@@ -1,0 +1,38 @@
+# Synergy Brix
+
+> Synergy Brix is a software development and digital solutions company based in Vasai West, Maharashtra, India. The company builds websites, custom software, web applications, business automation, dashboards, APIs, SaaS products, cloud solutions, and database systems for businesses.
+
+Synergy Brix serves organizations in Vasai-Virar, Mumbai, and beyond. The team works from business requirements and existing workflows to define an agreed scope, design and implement a solution, test it, and support deployment.
+
+## Company
+- [About Synergy Brix](https://www.synergybrix.com/about): Company background, founding team, and Vasai West location.
+- [Contact Synergy Brix](https://www.synergybrix.com/contact): Contact details and project enquiry.
+- [Frequently asked questions](https://www.synergybrix.com/faq): Answers about services, integrations, delivery, and support.
+- [Website development in Vasai](https://www.synergybrix.com/website-development-company-in-vasai): Local website and software services and service-area information.
+
+## Services
+- [All software development services](https://www.synergybrix.com/services)
+- [Custom software development](https://www.synergybrix.com/services/custom-software-development)
+- [Web application development](https://www.synergybrix.com/services/web-development)
+- [Business automation](https://www.synergybrix.com/services/business-automation)
+- [Dashboard development](https://www.synergybrix.com/services/dashboard-development)
+- [SaaS development](https://www.synergybrix.com/services/saas-development)
+- [Cloud solutions](https://www.synergybrix.com/services/cloud-solutions)
+- [Database solutions](https://www.synergybrix.com/services/database-solutions)
+
+## Work and delivery
+- [Selected project work](https://www.synergybrix.com/work): Project showcases for SSEZI Returns and Pratik Wellness Coach.
+- [Project delivery process](https://www.synergybrix.com/process): Discovery, planning, design, development, testing, and deployment.
+- [Business solutions](https://www.synergybrix.com/solutions): CRM, inventory, portals, workflows, reporting, and internal tools.
+- [Insights](https://www.synergybrix.com/insights): Articles on business technology, APIs, and dashboards.
+
+## Business contact
+- Email: [synergy.brix@gmail.com](mailto:synergy.brix@gmail.com)
+- Phone: [+91 79724 15528](tel:+917972415528)
+- Location: Vasai West, Maharashtra 401202, India.
+
+## Machine-readable discovery
+- [RFC 9727 API catalog](https://www.synergybrix.com/.well-known/api-catalog): Lists the website's project-enquiry form submission endpoints.
+- [Project-enquiry endpoint documentation](https://www.synergybrix.com/api/contact.md): Request fields, validation, and response behavior.
+
+This file is an informational index to public website content. The site does not operate an OAuth authorization server, authenticated API, MCP server, or agent registration protocol.

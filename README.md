@@ -24,19 +24,14 @@ Public corporate website for Synergy Brix, built with React, TypeScript, Vite, T
 
 ## Project notes
 
-- This is a frontend-only public website.
-- There is no admin dashboard, database, authentication flow, or private portal.
-- The contact form is frontend-ready and can later be connected to a backend or form provider via the environment variable `VITE_CONTACT_PROVIDER_URL`.
-- SEO metadata, sitemap, robots.txt, and branded favicon are included.
-
-## Environment variables
-
-Create a `.env` file if you want to connect the contact form to a real provider:
-
-```bash
-VITE_CONTACT_PROVIDER_URL=https://example.com/contact
-```
+- The public site uses prerendered React pages and Vercel functions for its project-enquiry forms. Enquiries are forwarded to the configured Google Forms provider.
+- There is no admin dashboard, database, OAuth authorization server, authenticated/private API, or MCP server.
+- SEO metadata, route content, sitemap, robots.txt, `llms.txt`, and the branded favicon are included.
+- `/.well-known/api-catalog` publishes an RFC 9727 Linkset for the existing enquiry endpoints. See [`/api/contact.md`](./public/api/contact.md) for their limited form-submission contract.
+- Public page routes return Markdown when explicitly requested with `Accept: text/markdown`; ordinary browser requests continue to receive the existing HTML application.
+- Vercel response headers and Markdown rewrites are configured in `vercel.json`. Vite development and preview also support the discovery endpoints.
+- Run `npm run build` to type-check, build, prerender public routes, and refresh the sitemap and robots.txt. Then run `node --experimental-strip-types seo/verify-seo.ts` to validate route metadata, JSON-LD, sitemap entries, robots.txt, `llms.txt`, the API catalog, Markdown responses, and Vercel route configuration.
 
 ## Production deployment
 
-The app is static-frontend ready and can be deployed to any static hosting platform such as Vercel, Netlify, GitHub Pages, or Cloudflare Pages.
+Deploy the project to Vercel so its API functions, `vercel.json` Link headers, well-known API catalog rewrite, and Markdown content-negotiation rewrites are active. A static-only deployment will serve the prerendered HTML and public files, but will not implement the API endpoints or HTTP negotiation behavior.

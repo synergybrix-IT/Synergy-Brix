@@ -1,3 +1,5 @@
+import { blogPosts, caseStudies, faqs, serviceFaqs, services, vasaiFaqs } from '../src/data/siteData.ts'
+
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Services', href: '/services' },
@@ -21,44 +23,6 @@ const SERVICE_LINKS = [
   { label: 'SaaS Development', href: '/services/saas-development' },
   { label: 'Cloud Solutions', href: '/services/cloud-solutions' },
   { label: 'Database Solutions', href: '/services/database-solutions' },
-]
-
-const SERVICES_DATA = [
-  {
-    title: 'Custom Software Development',
-    short: 'From idea to implementation, we build custom software designed specifically for your business.',
-    href: '/services/custom-software-development',
-  },
-  {
-    title: 'Web Application Development',
-    short: 'Fast, secure, and scalable web platforms built for your business.',
-    href: '/services/web-development',
-  },
-  {
-    title: 'Business Automation',
-    short: 'Reduce friction with workflows that connect data, timing, and actions.',
-    href: '/services/business-automation',
-  },
-  {
-    title: 'Dashboard Development',
-    short: 'Turn complex business data into clear, actionable insights.',
-    href: '/services/dashboard-development',
-  },
-  {
-    title: 'SaaS Development',
-    short: 'Scalable SaaS products built for growth, performance, and long-term success.',
-    href: '/services/saas-development',
-  },
-  {
-    title: 'Cloud Solutions',
-    short: 'Deployment strategies that support reliability, scalability, and simplicity.',
-    href: '/services/cloud-solutions',
-  },
-  {
-    title: 'Database Solutions',
-    short: 'Robust database solutions built for performance, reliability, and scale.',
-    href: '/services/database-solutions',
-  },
 ]
 
 function esc(s: string): string {
@@ -98,10 +62,14 @@ function buildPageContent(path: string, title: string, description: string): str
   if (path === '/faq') return buildFAQ()
   if (path === '/privacy') return buildPrivacy()
   if (path === '/terms') return buildTerms()
+  if (path === '/404') return `<h1>Page Not Found</h1><p>The page you requested does not exist or may have moved.</p><a href="/">Return to Synergy Brix</a>`
   return buildGeneric(title, description)
 }
 
 function buildVasaiLanding(): string {
+  const questions = vasaiFaqs
+    .map((faq) => `<section><h3>${esc(faq.q)}</h3><p>${esc(faq.a)}</p></section>`)
+    .join('')
   return [
     `<nav aria-label="Breadcrumb"><a href="/">Home</a> &gt; Website Development Company in Vasai</nav>`,
     `<h1>Website Development Company in Vasai</h1>`,
@@ -228,16 +196,7 @@ function buildVasaiLanding(): string {
     `</ul>`,
     `</section>`,
 
-    `<section>`,
-    `<h2>Frequently Asked Questions</h2>`,
-    `<details><summary>Does Synergy Brix build websites for businesses in Vasai?</summary><p>Yes. Synergy Brix is based in Vasai West and works directly with businesses across Vasai, Virar, Nalasopara, Naigaon, and the wider Mumbai Metropolitan Region to design and develop modern, responsive, and high-performance websites.</p></details>`,
-    `<details><summary>What type of websites does Synergy Brix develop?</summary><p>We build professional corporate websites, custom web applications, e-commerce storefronts, business portfolios, marketing landing pages, and customer portals tailored to the specific operational and commercial needs of each client.</p></details>`,
-    `<details><summary>Can Synergy Brix build custom business software?</summary><p>Yes. Beyond standard websites, we engineer bespoke software solutions including custom business management platforms, admin dashboards, database-driven applications, CRM tools, ERP modules, and REST APIs engineered for complex workflows.</p></details>`,
-    `<details><summary>Can you automate business processes?</summary><p>Yes. We build automation workflows that handle customer inquiry routing, automated email/WhatsApp follow-ups, appointment scheduling, digital invoice generation, and cross-system data synchronization.</p></details>`,
-    `<details><summary>Do you provide website maintenance?</summary><p>Yes. We offer comprehensive website maintenance plans that include security updates, performance monitoring, technical bug fixes, regular backups, and content updates to keep your website fast and reliable.</p></details>`,
-    `<details><summary>Can you build a CRM or admin dashboard?</summary><p>Yes. We specialize in custom dashboards and CRM systems that give business owners and management real-time visibility over leads, orders, inventory, and operational metrics.</p></details>`,
-    `<details><summary>Do you work with small businesses in Vasai-Virar?</summary><p>Yes. We actively work with small and medium businesses, local retail shops, professional service firms, and early-stage startups across Vasai-Virar, providing practical, scalable technology solutions.</p></details>`,
-    `</section>`,
+    `<section><h2>Frequently Asked Questions</h2>${questions}</section>`,
 
     `<section>`,
     `<h2>Start Your Website or Software Project</h2>`,
@@ -253,13 +212,13 @@ function buildGeneric(title: string, description: string): string {
 }
 
 function buildHome(): string {
-  const serviceLinks = SERVICES_DATA.map(
-    (s) => `<li><a href="${s.href}"><h3>${esc(s.title)}</h3></a><p>${esc(s.short)}</p></li>`,
+  const serviceLinks = services.map(
+    (service) => `<li><a href="/services/${service.slug}"><h3>${esc(service.title)}</h3></a><p>${esc(service.short)}</p></li>`,
   ).join('')
   return [
     `<h1>Synergy Brix — Software Development &amp; Technology Solutions</h1>`,
-    `<p>Business-first software engineering for custom products, integrations, automation, web applications, and scalable digital systems.</p>`,
-    `<p>We help organizations modernize operations, build custom software, connect systems, and create practical digital tools that scale with the business.</p>`,
+    `<p><strong>Synergy Brix is a software and digital solutions company based in Vasai West, Maharashtra.</strong> We build business websites, custom web applications, APIs, workflow automation, dashboards, SaaS products, and database-backed tools around the way an organization works.</p>`,
+    `<p>Our team works with businesses in Vasai-Virar, Mumbai, and beyond. Projects begin by understanding the business goal and existing process, then agreeing on scope, implementation, testing, and deployment. Explore our <a href="/services">software development services</a>, <a href="/work">selected project work</a>, or <a href="/about">company and team information</a>.</p>`,
     `<section><h2>Our Services</h2><ul>${serviceLinks}</ul><a href="/services">View all services</a></section>`,
     `<section><h2>Business Solutions</h2><p>Business Management, CRM, Inventory Management, Customer Portals, Workflow Automation, Reporting Dashboards, Employee Management, Document Management, Scheduling, Internal Tools.</p><a href="/solutions">Explore solutions</a></section>`,
     `<section><h2>Why Synergy Brix</h2><ul><li>Business-first approach</li><li>Clean engineering</li><li>Scalable architecture</li><li>Security-conscious development</li><li>Transparent communication</li><li>Custom solutions</li><li>Long-term support</li></ul></section>`,
@@ -269,9 +228,9 @@ function buildHome(): string {
 }
 
 function buildServicesIndex(): string {
-  const cards = SERVICES_DATA.map(
-    (s) =>
-      `<article><h3><a href="${s.href}">${esc(s.title)}</a></h3><p>${esc(s.short)}</p><a href="${s.href}">Explore service</a></article>`,
+  const cards = services.map(
+    (service) =>
+      `<article><h3><a href="/services/${service.slug}">${esc(service.title)}</a></h3><p>${esc(service.short)}</p><a href="/services/${service.slug}">Explore service</a></article>`,
   ).join('')
   return [
     `<h1>Software Development &amp; Technology Services</h1>`,
@@ -284,68 +243,13 @@ function buildServicesIndex(): string {
 
 function buildServiceDetail(path: string): string {
   const slug = path.replace('/services/', '')
-  const serviceMap: Record<string, { title: string; short: string; problem: string; solution: string; features: string[]; tech: string[] }> = {
-    'custom-software-development': {
-      title: 'Custom Software Development',
-      short: 'From idea to implementation, we build custom software designed specifically for your business.',
-      problem: 'Off-the-shelf software often fails to fit the way your business actually works.',
-      solution: 'We design and develop custom software tailored to your unique requirements, workflows, and operational needs—built to scale as your business grows.',
-      features: ['Requirements Discovery & Planning', 'Custom Software Development', 'Workflow Automation', 'Scalable System Architecture', 'Ongoing Maintenance & Support'],
-      tech: ['React', 'TypeScript', 'Java', 'Spring Boot', 'PostgreSQL'],
-    },
-    'web-development': {
-      title: 'Web Application Development',
-      short: 'Fast, secure, and scalable web platforms built for your business.',
-      problem: 'Disconnected systems and inefficient web tools can slow operations and create poor user experiences.',
-      solution: 'We build secure, scalable web applications tailored to your workflows and designed to grow with your business.',
-      features: ['Responsive & Intuitive UI', 'Role-Based Access Control', 'Secure User Management', 'Performance Optimization', 'Scalable Architecture'],
-      tech: ['React', 'TypeScript', 'HTML', 'CSS', 'REST APIs'],
-    },
-    'business-automation': {
-      title: 'Business Automation',
-      short: 'Reduce friction with workflows that connect data, timing, and actions.',
-      problem: 'Manual handoffs slow teams and create avoidable operational risk.',
-      solution: 'We automate repeatable processes to save time and improve consistency across your business.',
-      features: ['Workflow automation', 'Notifications', 'Document processing', 'Task orchestration', 'Data sync'],
-      tech: ['Java', 'REST APIs', 'Cron jobs', 'Cloud services', 'Reporting'],
-    },
-    'dashboard-development': {
-      title: 'Dashboard Development',
-      short: 'Turn complex business data into clear, actionable insights.',
-      problem: 'Scattered data makes it difficult to monitor performance and make informed decisions.',
-      solution: 'We create centralized dashboards that transform fragmented data into clear, actionable insights.',
-      features: ['Data Integration & Aggregation', 'Custom KPIs & Metrics', 'Interactive Data Visualizations', 'Automated Reporting', 'Role-based Dashboards', 'Real-Time Insights'],
-      tech: ['React', 'TypeScript', 'Data Visualization', 'REST APIs', 'Security Patterns'],
-    },
-    'saas-development': {
-      title: 'SaaS Development',
-      short: 'Scalable SaaS products built for growth, performance, and long-term success.',
-      problem: 'Building a SaaS product requires more than just features—it needs a scalable foundation that can support growth.',
-      solution: 'We build flexible, scalable SaaS platforms designed to evolve with your users, product, and business.',
-      features: ['Multi-Tenant Architecture', 'User Authentication & Onboarding', 'Subscription & Billing Integration', 'Performance Monitoring', 'Scalable Product Structure', 'Ongoing Maintenance & Support'],
-      tech: ['React', 'TypeScript', 'Java', 'Spring Boot', 'Cloud deployment'],
-    },
-    'cloud-solutions': {
-      title: 'Cloud Solutions',
-      short: 'Deployment strategies that support reliability, scalability, and simplicity.',
-      problem: 'Without the right cloud strategy, applications can become costly, difficult to manage, and unreliable as they scale.',
-      solution: 'We build scalable cloud infrastructure for reliable performance and growth.',
-      features: ['Cloud Architecture & Planning', 'Containerization', 'CI/CD Implementation', 'Cloud Deployment & Migration', 'Performance Optimization', 'Infrastructure Monitoring'],
-      tech: ['Docker', 'Cloud deployment', 'CI/CD', 'Container orchestration', 'Monitoring'],
-    },
-    'database-solutions': {
-      title: 'Database Solutions',
-      short: 'Robust database solutions built for performance, reliability, and scale.',
-      problem: 'Poor database design can lead to slow performance, inconsistent data, and systems that are difficult to scale.',
-      solution: 'We design scalable, reliable databases that keep your data structured, secure, and accessible.',
-      features: ['Database Architecture & Schema Design', 'Data Modeling', 'Query & Performance Optimization', 'Database Migration', 'Data Integrity & Security'],
-      tech: ['PostgreSQL', 'MySQL', 'Database design', 'SQL', 'System integration'],
-    },
-  }
-  const svc = serviceMap[slug]
+  const svc = services.find((service) => service.slug === slug)
   if (!svc) return buildGeneric(slug, '')
-  const featureList = svc.features.map((f) => `<li>${esc(f)}</li>`).join('')
-  const techList = svc.tech.map((t) => `<li>${esc(t)}</li>`).join('')
+  const featureList = svc.features.map((feature) => `<li>${esc(feature)}</li>`).join('')
+  const techList = svc.technology.map((technology) => `<li>${esc(technology)}</li>`).join('')
+  const questions = serviceFaqs[svc.slug]
+    .map((faq) => `<article><h3>${esc(faq.question)}</h3><p>${esc(faq.answer)}</p></article>`)
+    .join('')
   const otherLinks = SERVICE_LINKS.filter((l) => l.href !== path)
     .map((l) => `<li><a href="${l.href}">${esc(l.label)}</a></li>`)
     .join('')
@@ -353,11 +257,14 @@ function buildServiceDetail(path: string): string {
     `<nav aria-label="Breadcrumb"><a href="/">Home</a> &gt; <a href="/services">Services</a> &gt; ${esc(svc.title)}</nav>`,
     `<h1>${esc(svc.title)}</h1>`,
     `<p>${esc(svc.short)}</p>`,
-    `<section><h2>The Problem</h2><p>${esc(svc.problem)}</p></section>`,
-    `<section><h2>Our Approach</h2><p>${esc(svc.solution)}</p></section>`,
-    `<section><h2>Key Capabilities</h2><ul>${featureList}</ul></section>`,
+    `<section><h2>What does ${esc(svc.title)} help a business do?</h2><p>${esc(svc.solution)}</p></section>`,
+    `<section><h2>Which business problem does it address?</h2><p>${esc(svc.problem)}</p></section>`,
+    `<section><h2>What does the service include?</h2><ul>${featureList}</ul></section>`,
+    `<section><h2>How do we approach ${esc(svc.title.toLowerCase())}?</h2><p>We start by understanding the workflow and requirements, agree on a practical scope and technical approach, then design, build, test, and deploy the solution. The exact implementation depends on your existing systems and project needs.</p></section>`,
+    `<section><h2>Questions about ${esc(svc.title.toLowerCase())}</h2>${questions}</section>`,
     `<section><h2>Technologies</h2><ul>${techList}</ul></section>`,
     `<section><h2>Other Services</h2><ul>${otherLinks}</ul></section>`,
+    `<p>See our <a href="/process">project delivery process</a> and <a href="/work">selected project work</a>.</p>`,
     `<a href="/contact">${esc(svc.title === 'Custom Software Development' ? 'Discuss a custom solution' : 'Start a Project')}</a>`,
   ].join('')
 }
@@ -396,39 +303,36 @@ function buildIndustries(): string {
 }
 
 function buildWork(): string {
+  const projects = caseStudies
+    .map(
+      (project) =>
+        `<li><a href="/work/${project.slug}"><h3>${esc(project.title)}</h3></a><p>${esc(project.overview)}</p></li>`,
+    )
+    .join('')
   return [
     `<h1>Client Work &amp; Case Studies</h1>`,
-    `<p>Browse selected project showcases from Synergy Brix.</p>`,
-    `<ul>`,
-    `<li><a href="/work/ssezi-returns"><h3>SSEZI Returns</h3></a><p>A modern digital platform for logistics and returns management.</p></li>`,
-    `<li><a href="/work/pratik-wellness"><h3>Pratik — Wellness Coach</h3></a><p>A wellness and lifestyle coaching platform.</p></li>`,
-    `</ul>`,
+    `<p>Selected project showcases describe the client context, challenge, approach, and solution using available project information.</p>`,
+    `<ul>${projects}</ul>`,
   ].join('')
 }
 
 function buildCaseStudy(path: string): string {
   const slug = path.replace('/work/', '')
-  if (slug === 'ssezi-returns') {
-    return [
-      `<nav aria-label="Breadcrumb"><a href="/">Home</a> &gt; <a href="/work">Work</a> &gt; SSEZI Returns</nav>`,
-      `<h1>SSEZI Returns — Logistics Platform</h1>`,
-      `<p>Designed and developed a modern digital platform for SSEZI Returns, a logistics and transportation business focused on customer returns, reverse pickups, fulfillment, distribution, and logistics solutions.</p>`,
-      `<section><h2>Challenge</h2><p>Managing reverse logistics, return pickups, and B2B vendor inquiries required a unified digital presence.</p></section>`,
-      `<section><h2>Solution</h2><p>A high-performance responsive web platform with intuitive service navigation, transparent workflow overviews, and direct enquiry pipelines.</p></section>`,
-      `<section><h2>Technologies</h2><p>Next.js, React, Tailwind CSS, TypeScript, Responsive Design</p></section>`,
-    ].join('')
-  }
-  if (slug === 'pratik-wellness') {
-    return [
-      `<nav aria-label="Breadcrumb"><a href="/">Home</a> &gt; <a href="/work">Work</a> &gt; Pratik Wellness</nav>`,
-      `<h1>Pratik — Wellness Coach Platform</h1>`,
-      `<p>Designed and developed a modern wellness and lifestyle platform for Pratik, featuring personalized nutrition coaching and client support.</p>`,
-      `<section><h2>Challenge</h2><p>Conveying a calm, credible, and personalized coaching philosophy while organizing diverse offerings.</p></section>`,
-      `<section><h2>Solution</h2><p>An elegant, content-rich web experience with structured wellness offerings and conversion funnels.</p></section>`,
-      `<section><h2>Technologies</h2><p>Next.js, React, Tailwind CSS, TypeScript</p></section>`,
-    ].join('')
-  }
-  return `<h1>Case Study</h1><p>Project details.</p>`
+  const project = caseStudies.find((item) => item.slug === slug)
+  if (!project) return `<h1>Case study not found</h1>`
+  return [
+    `<nav aria-label="Breadcrumb"><a href="/">Home</a> &gt; <a href="/work">Work</a> &gt; ${esc(project.title)}</nav>`,
+    `<h1>${esc(project.title)}</h1>`,
+    `<p>${esc(project.overview)}</p>`,
+    `<section><h2>Challenge</h2><p>${esc(project.challenge)}</p></section>`,
+    `<section><h2>Approach</h2><p>${esc(project.approach)}</p></section>`,
+    `<section><h2>Solution</h2><p>${esc(project.solution)}</p></section>`,
+    `<section><h2>Technology</h2><p>${esc(project.technology.join(', '))}</p></section>`,
+    `<section><h2>Architecture</h2><p>${esc(project.architecture)}</p></section>`,
+    `<section><h2>Outcome</h2><p>${esc(project.outcome)}</p></section>`,
+    project.liveUrl ? `<p><a href="${esc(project.liveUrl)}">View the live project website</a></p>` : '',
+    `<p><a href="/work">Back to selected work</a> | <a href="/contact">Discuss a project</a></p>`,
+  ].join('')
 }
 
 function buildProcess(): string {
@@ -471,48 +375,23 @@ function buildInsights(): string {
 
 function buildInsightDetail(path: string): string {
   const slug = path.replace('/insights/', '')
-  const posts: Record<string, { title: string; content: string[]; relatedService?: string; relatedServiceTitle?: string }> = {
-    'building-technology-around-business-processes': {
-      title: 'Building technology around business processes',
-      content: [
-        'Good software does not begin with code. It begins with business clarity.',
-        'This is especially important when businesses are dealing with fragmented systems, manual handoffs, or informal processes.',
-        'When the process is clear, the technology becomes easier to design, more reliable to implement, and more valuable to the business long term.',
-      ],
-      relatedService: '/services/custom-software-development',
-      relatedServiceTitle: 'Custom Software Development',
-    },
-    'what-makes-an-api-reliable': {
-      title: 'What makes an API reliable',
-      content: [
-        'A reliable API is built around clarity. It needs consistent contracts, predictable behavior, and a thoughtful approach to versioning and error handling.',
-        'Security, observability, and maintainability are not afterthoughts.',
-        'When organizations connect systems through well-designed interfaces, they reduce complexity and improve flexibility.',
-      ],
-      relatedService: '/services/web-development',
-      relatedServiceTitle: 'Web Application Development',
-    },
-    'when-dashboards-drive-better-decisions': {
-      title: 'When dashboards drive better decisions',
-      content: [
-        'A dashboard should not be a dump of every available metric. Its purpose is to help teams understand what is happening quickly and take practical action without cognitive overload.',
-        'Effective dashboards focus on actionable metrics, clear visual hierarchy, role-specific contexts, and automated reporting triggers.',
-        'When organizations replace scattered spreadsheets with focused dashboards, decision speed and operational awareness improve noticeably.',
-      ],
-      relatedService: '/services/dashboard-development',
-      relatedServiceTitle: 'Dashboard Development',
-    },
-  }
-  const post = posts[slug]
+  const post = blogPosts.find((item) => item.slug === slug)
   if (!post) return `<h1>Insight</h1>`
   const paras = post.content.map((p) => `<p>${esc(p)}</p>`).join('')
-  const related = post.relatedService
-    ? `<section><h2>Related Capability</h2><p>Explore how Synergy Brix builds ${esc(post.relatedServiceTitle || 'custom software')} to support this work.</p><a href="${post.relatedService}">Explore ${esc(post.relatedServiceTitle || 'this service')}</a></section>`
+  const references = post.references?.length
+    ? `<section><h2>Further reading</h2><ul>${post.references
+        .map((reference) => `<li><a href="${esc(reference.url)}">${esc(reference.title)}</a></li>`)
+        .join('')}</ul></section>`
+    : ''
+  const related = post.relatedServiceSlug && post.relatedServiceTitle
+    ? `<section><h2>Related Capability</h2><p>Explore how Synergy Brix builds ${esc(post.relatedServiceTitle)} to support this work.</p><a href="/services/${post.relatedServiceSlug}">Explore ${esc(post.relatedServiceTitle)}</a></section>`
     : ''
   return [
     `<nav aria-label="Breadcrumb"><a href="/">Home</a> &gt; <a href="/insights">Insights</a> &gt; ${esc(post.title)}</nav>`,
     `<h1>${esc(post.title)}</h1>`,
+    `<p>By <a href="/about">Synergy Brix</a></p>`,
     paras,
+    references,
     related,
     `<p><a href="/insights">Back to all insights</a></p>`,
   ].join('')
@@ -521,8 +400,10 @@ function buildInsightDetail(path: string): string {
 function buildAbout(): string {
   return [
     `<h1>About Synergy Brix</h1>`,
-    `<p>Synergy Brix is a technology and software development company building custom web applications, software solutions, business automation, and scalable digital products.</p>`,
-    `<p>We help organizations modernize operations, connect systems, and create practical digital tools that scale with the business.</p>`,
+    `<p>Synergy Brix is a technology and software development company founded by three IT professionals and based in Vasai West, Maharashtra. The team builds custom web applications, business software, automation, and digital products for growing businesses.</p>`,
+    `<section><h2>Founding team</h2><ul><li>Nikhil Asuri — Co-Founder &amp; CEO</li><li>Atharva Patil — Co-Founder &amp; Co-CTO</li><li>Vedant Patil — Co-Founder &amp; Co-CTO</li></ul></section>`,
+    `<p>We focus on understanding business workflows before selecting an implementation. Our work spans CRM and inventory tools, customer portals, dashboards, document workflows, APIs, and other purpose-built systems.</p>`,
+    `<section><h2>Location and service area</h2><address>Gonsalves Property, Near Alphonso Church, Behind Stella Petrol Pump, Vasai West, Maharashtra 401202, India</address><p>Synergy Brix works with businesses in Vasai-Virar and Mumbai, as well as remote clients. <a href="/contact">Contact the team</a> or explore <a href="/website-development-company-in-vasai">website and software development in Vasai</a>.</p></section>`,
     `<section><h2>Our Values</h2><ul><li>Business-first approach</li><li>Clean engineering</li><li>Scalable architecture</li><li>Security-conscious development</li><li>Transparent communication</li><li>Custom solutions</li><li>Long-term support</li></ul></section>`,
   ].join('')
 }
@@ -541,13 +422,9 @@ function buildContact(): string {
 }
 
 function buildFAQ(): string {
-  const faqs = [
-    { q: 'What types of software solutions do you build?', a: 'We design and develop custom web applications, internal tools, ERP modules, CRM solutions, inventory systems, APIs and integrations, SaaS platforms, and automated workflow solutions.' },
-    { q: 'How do you handle integrations with our existing tools?', a: 'We design secure REST APIs, webhooks, and database synchronization pipelines that connect your existing platforms seamlessly.' },
-    { q: 'What is your typical project process and timeline?', a: 'We follow a structured 6-step lifecycle: Discover, Plan, Design, Develop, Test, and Deploy. Timelines range from 2–4 weeks to 8–12 weeks.' },
-    { q: 'Do you provide ongoing support after launch?', a: 'Yes. We offer maintenance, monitoring, security updates, feature enhancements, and cloud infrastructure support.' },
-  ]
-  const list = faqs.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')
+  const list = faqs
+    .map((faq) => `<section><h2>${esc(faq.question)}</h2><p>${esc(faq.answer)}</p></section>`)
+    .join('')
   return [
     `<h1>Frequently Asked Questions</h1>`,
     `<p>Find answers to common questions about custom software development, web applications, integrations, cloud hosting, automation, and project planning.</p>`,
@@ -558,13 +435,13 @@ function buildFAQ(): string {
 function buildPrivacy(): string {
   return [
     `<h1>Privacy Policy</h1>`,
-    `<p>Read the Synergy Brix privacy policy detailing data handling practices, security commitments, and operational privacy guidelines.</p>`,
+    `<p>Privacy policy placeholder pending legal review by Synergy Brix.</p>`,
   ].join('')
 }
 
 function buildTerms(): string {
   return [
     `<h1>Terms &amp; Conditions</h1>`,
-    `<p>Read the Synergy Brix terms and conditions regarding software development services, project scopes, intellectual property, and service agreements.</p>`,
+    `<p>Terms and conditions placeholder pending legal review by Synergy Brix.</p>`,
   ].join('')
 }

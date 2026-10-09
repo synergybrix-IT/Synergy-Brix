@@ -34,6 +34,7 @@ import {
 } from 'lucide-react'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { SITE_URL } from '../config/siteUrl'
+import { vasaiFaqs } from '../data/siteData'
 import { SectionIndex, Magnetic, PointerParallax, BgText } from '../components/premium'
 
 export interface VasaiLandingPageProps {
@@ -408,40 +409,6 @@ const SERVICE_AREAS = [
 ]
 
 /* ============================================================================
- * FAQs (Section 10)
- * ========================================================================= */
-const VASAI_FAQS = [
-  {
-    q: 'Does Synergy Brix build websites for businesses in Vasai?',
-    a: 'Yes. Synergy Brix is based in Vasai West and works directly with businesses across Vasai, Virar, Nalasopara, Naigaon, and the wider Mumbai Metropolitan Region to design and develop modern, responsive, and high-performance websites.',
-  },
-  {
-    q: 'What type of websites does Synergy Brix develop?',
-    a: 'We build professional corporate websites, custom web applications, e-commerce storefronts, business portfolios, marketing landing pages, and customer portals. Every website is built from the ground up to match the specific commercial requirements of your business.',
-  },
-  {
-    q: 'Can Synergy Brix build custom business software?',
-    a: 'Yes. Beyond standard websites, we engineer bespoke software solutions including custom business management platforms, admin dashboards, database-driven applications, CRM tools, ERP modules, and REST APIs designed around your real operational workflows.',
-  },
-  {
-    q: 'Can you automate business processes?',
-    a: 'Yes. We build automation workflows that handle customer inquiry routing, automated email/WhatsApp follow-ups, appointment scheduling, digital invoice generation, and cross-system data synchronization to eliminate manual administrative bottlenecks.',
-  },
-  {
-    q: 'Do you provide website maintenance?',
-    a: 'Yes. We offer reliable website maintenance services covering regular software updates, security monitoring, uptime tracking, performance optimization, content updates, and routine backups to ensure your digital assets stay secure and fast.',
-  },
-  {
-    q: 'Can you build a CRM or admin dashboard?',
-    a: 'Yes. We specialize in developing intuitive admin dashboards and custom CRM systems that give business owners and management teams clear, real-time visibility over inquiries, sales pipelines, customer interactions, and operational metrics.',
-  },
-  {
-    q: 'Do you work with small businesses in Vasai-Virar?',
-    a: 'Yes. We actively work with small and medium businesses, local retail shops, professional service firms, and early-stage startups across Vasai-Virar, providing practical, scalable technology solutions that respect real-world business budgets.',
-  },
-]
-
-/* ============================================================================
  * JSON-LD Schema Generator
  * ========================================================================= */
 function getVasaiLandingJsonLd() {
@@ -476,7 +443,6 @@ function getVasaiLandingJsonLd() {
           'Synergy Brix is a website and software development company serving businesses in Vasai-Virar with modern websites, web applications, business automation, CRM, APIs and custom software solutions.',
         telephone: '+91-79724-15528',
         email: 'synergy.brix@gmail.com',
-        priceRange: '₹₹',
         address: {
           '@type': 'PostalAddress',
           streetAddress: 'Gonsalves Property, Near Alphonso Church, Behind Stella Petrol Pump',
@@ -528,7 +494,7 @@ function getVasaiLandingJsonLd() {
       },
       {
         '@type': 'FAQPage',
-        mainEntity: VASAI_FAQS.map((faq) => ({
+        mainEntity: vasaiFaqs.map((faq) => ({
           '@type': 'Question',
           name: faq.q,
           acceptedAnswer: {
@@ -1278,7 +1244,7 @@ export default function VasaiLandingPage({ onOpenProjectModal }: VasaiLandingPag
 
             <div>
               <ul className="border-t border-white/8">
-                {VASAI_FAQS.map((faq, idx) => {
+                {vasaiFaqs.map((faq, idx) => {
                   const isOpen = openFaqIdx === idx
                   return (
                     <li key={faq.q} className="border-b border-white/8">
