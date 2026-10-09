@@ -1,4 +1,4 @@
-import { SITE_URL } from '../config/siteUrl'
+import { SITE_URL } from '../config/siteUrl.ts'
 
 export type NavItem = {
   label: string
@@ -58,6 +58,7 @@ export type BlogPost = {
   readTime: string
   date: string
   content: string[]
+  references?: { title: string; url: string }[]
   relatedServiceSlug?: string
   relatedServiceTitle?: string
 }
@@ -152,6 +153,124 @@ export const services: Service[] = [
     features: ['Database Architecture & Schema Design', 'Data Modeling', 'Query & Performance Optimization', 'Database Migration', 'Data Integrity & Security'],
     technology: ['PostgreSQL', 'MySQL', 'Database design', 'SQL', 'System integration'],
     cta: 'Improve your data foundation',
+  },
+]
+
+export const serviceFaqs: Record<Service['slug'], { question: string; answer: string }[]> = {
+  'custom-software-development': [
+    {
+      question: 'When is custom software a better fit than an off-the-shelf tool?',
+      answer:
+        'Custom software can be a better fit when important workflows, permissions, or integrations do not fit the tools you already use. We first map the requirements and compare the proposed build with practical alternatives.',
+    },
+    {
+      question: 'What happens before development starts?',
+      answer:
+        'We discuss the business goal, users, existing tools, and essential workflows, then define an initial scope and technical approach before implementation.',
+    },
+  ],
+  'web-development': [
+    {
+      question: 'Do you build business websites as well as web applications?',
+      answer:
+        'Yes. We build responsive business websites and interactive web applications, choosing the scope and structure according to whether the primary need is public information, customer self-service, or internal workflows.',
+    },
+    {
+      question: 'Can a web application connect to existing systems?',
+      answer:
+        'Where suitable interfaces are available, applications can connect to existing services through APIs and other agreed integrations. The available systems and data access are reviewed during discovery.',
+    },
+  ],
+  'business-automation': [
+    {
+      question: 'Which business processes can be automated?',
+      answer:
+        'Repeatable steps such as enquiry routing, notifications, scheduled tasks, document handling, and data synchronization can be candidates. We review the current process first to identify useful, safe automation boundaries.',
+    },
+    {
+      question: 'Can automation connect more than one business tool?',
+      answer:
+        'Yes, when the systems provide suitable APIs or other supported integration methods. The workflow is designed around the data each system can reliably exchange.',
+    },
+  ],
+  'dashboard-development': [
+    {
+      question: 'What can a business dashboard show?',
+      answer:
+        'A dashboard can present agreed operational measures, such as sales pipeline, inventory, service activity, or workflow status, using data sources that the business can connect and maintain.',
+    },
+    {
+      question: 'Can dashboards use data from multiple systems?',
+      answer:
+        'They can combine data from multiple systems when those sources can be accessed and mapped reliably. Data availability and refresh needs are confirmed during planning.',
+    },
+  ],
+  'saas-development': [
+    {
+      question: 'Can you help plan a SaaS product before building it?',
+      answer:
+        'Yes. Discovery can clarify target users, essential workflows, access roles, data boundaries, and the scope of an initial product before development begins.',
+    },
+    {
+      question: 'Can a SaaS platform support separate customer accounts?',
+      answer:
+        'A multi-tenant design can separate customer accounts within a shared platform. The appropriate data isolation, permissions, and operational model depend on the product requirements.',
+    },
+  ],
+  'cloud-solutions': [
+    {
+      question: 'Can you help deploy an existing application to the cloud?',
+      answer:
+        'We can review an application and its operational requirements, then plan suitable cloud deployment, containerization, and release workflows for the project.',
+    },
+    {
+      question: 'Do cloud projects include infrastructure planning?',
+      answer:
+        'Yes. Planning can cover application architecture, deployment environments, CI/CD needs, monitoring considerations, and the operational responsibilities agreed for the project.',
+    },
+  ],
+  'database-solutions': [
+    {
+      question: 'Can you improve an existing database design?',
+      answer:
+        'We can review schemas, data relationships, query patterns, and application needs to identify practical database design or performance improvements.',
+    },
+    {
+      question: 'Do you work with PostgreSQL and MySQL?',
+      answer:
+        'Yes. PostgreSQL and MySQL are among the relational database technologies used in our stated project capabilities; the choice depends on the application requirements.',
+    },
+  ],
+}
+
+export const vasaiFaqs = [
+  {
+    q: 'Does Synergy Brix build websites for businesses in Vasai?',
+    a: 'Yes. Synergy Brix is based in Vasai West and works with businesses across Vasai, Virar, Nalasopara, Naigaon, and the wider Mumbai Metropolitan Region on websites, web applications, and business software.',
+  },
+  {
+    q: 'What type of websites does Synergy Brix develop?',
+    a: 'We build business websites, custom web applications, e-commerce storefronts, portfolios, marketing landing pages, and customer portals. The scope is planned around each business and its requirements.',
+  },
+  {
+    q: 'Can Synergy Brix build custom business software?',
+    a: 'Yes. We develop custom business applications, dashboards, database-driven tools, CRM and ERP modules, and REST APIs around agreed business workflows.',
+  },
+  {
+    q: 'Can you automate business processes?',
+    a: 'We can assess repeatable workflows such as enquiry routing, notifications, appointment scheduling, invoice generation, and data synchronization to determine what can be automated with the available systems.',
+  },
+  {
+    q: 'Do you provide website maintenance?',
+    a: 'Maintenance can cover software updates, security checks, performance improvements, content changes, backups, and technical fixes, according to the agreed support scope.',
+  },
+  {
+    q: 'Can you build a CRM or admin dashboard?',
+    a: 'Yes. We build CRM tools and dashboards to organize customer records, enquiries, sales activity, operational measures, or other agreed information using available business data.',
+  },
+  {
+    q: 'Do you work with small businesses in Vasai-Virar?',
+    a: 'Synergy Brix works with growing businesses and organizations in the Vasai-Virar area. We discuss requirements and scope before recommending a practical technical approach.',
   },
 ]
 
@@ -318,12 +437,20 @@ export const blogPosts: BlogPost[] = [
     title: 'What makes an API reliable',
     category: 'APIs',
     excerpt: 'Reliable APIs are not just technically sound—they are predictable, secure, and easy to integrate over time.',
-    readTime: '6 min read',
+    readTime: '3 min read',
     date: 'May 2026',
     content: [
-      'A reliable API is built around clarity. It needs consistent contracts, predictable behavior, and a thoughtful approach to versioning and error handling.',
-      'Security, observability, and maintainability are not afterthoughts. They are part of a strong API design strategy from the beginning.',
-      'When organizations connect internal and external systems through well-designed interfaces, they reduce complexity and improve flexibility for future product growth.',
+      'A reliable API is predictable for the people and systems that depend on it. Its contract explains what a request needs, what a successful response contains, and how clients should interpret errors. Clear behavior makes integrations easier to build and safer to change.',
+      'Start with resource names, request and response formats, validation rules, and consistent HTTP status codes. Treat error responses as part of the contract: include enough information for a client to respond, but do not expose internal details. Document which operations can be retried safely. A client retrying after a timeout should not accidentally create a duplicate order or payment.',
+      'Plan compatibility as the API evolves. Additive changes may be compatible when clients can ignore new optional fields, while removing or changing existing behavior can break consumers. Communicate breaking changes, provide a migration path, and test the contract between the API and its clients.',
+      'Security belongs in the design, not as a final layer. Authenticate callers, check authorization for each protected operation, validate untrusted input, and avoid recording credentials or sensitive data in logs. Use transport security and review how each integration handles tokens and permissions.',
+      'Operational visibility helps teams find problems that only appear in production. Monitor request failures and latency, preserve correlation identifiers across services, and log useful context without secrets. Test success and failure cases, including invalid input, unavailable dependencies, timeouts, and retry behavior.',
+      'Reliability is therefore a combination of a clear interface, compatible change management, security, useful diagnostics, and testing. The exact choices depend on the API consumers and business risk; there is no single status code, versioning strategy, or monitoring setup that fits every integration.',
+    ],
+    references: [
+      { title: 'MDN: HTTP request methods', url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods' },
+      { title: 'MDN: HTTP response status codes', url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status' },
+      { title: 'IETF RFC 9110: HTTP Semantics', url: 'https://www.rfc-editor.org/rfc/rfc9110.html' },
     ],
     relatedServiceSlug: 'web-development',
     relatedServiceTitle: 'Web Application Development',
@@ -433,7 +560,7 @@ export const pageMeta = {
   home: {
     title: 'Synergy Brix | Software Development & Technology Solutions',
     description:
-      'Synergy Brix is a technology and software development company building custom web applications, software solutions, AI-powered tools, business automation, and scalable digital products.',
+      'Software development in Vasai-Virar and Mumbai: Synergy Brix builds custom web applications, business automation, APIs, dashboards, SaaS products, and digital systems.',
     canonical: `${SITE_URL}/`,
   },
   vasaiWebDevelopment: {
@@ -505,13 +632,13 @@ export const pageMeta = {
   privacy: {
     title: 'Privacy Policy | Synergy Brix',
     description:
-      'Read the Synergy Brix privacy policy detailing data handling practices, security commitments, and operational privacy guidelines.',
+      'Privacy policy placeholder pending legal review by Synergy Brix.',
     canonical: `${SITE_URL}/privacy`,
   },
   terms: {
     title: 'Terms & Conditions | Synergy Brix',
     description:
-      'Read the Synergy Brix terms and conditions regarding software development services, project scopes, intellectual property, and service agreements.',
+      'Terms and conditions placeholder pending legal review by Synergy Brix.',
     canonical: `${SITE_URL}/terms`,
   },
 }

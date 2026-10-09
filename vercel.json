@@ -8,6 +8,12 @@
     },
     "api/project-inquiry.js": {
       "maxDuration": 10
+    },
+    "api/api-catalog.js": {
+      "maxDuration": 10
+    },
+    "api/markdown.js": {
+      "maxDuration": 10
     }
   },
   "redirects": [
@@ -40,10 +46,145 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/.well-known/api-catalog",
+      "destination": "/api/api-catalog"
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2F"
+    },
+    {
+      "source": "/services",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fservices"
+    },
+    {
+      "source": "/services/custom-software-development",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fservices%2Fcustom-software-development"
+    },
+    {
+      "source": "/services/web-development",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fservices%2Fweb-development"
+    },
+    {
+      "source": "/services/business-automation",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fservices%2Fbusiness-automation"
+    },
+    {
+      "source": "/services/dashboard-development",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fservices%2Fdashboard-development"
+    },
+    {
+      "source": "/services/saas-development",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fservices%2Fsaas-development"
+    },
+    {
+      "source": "/services/cloud-solutions",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fservices%2Fcloud-solutions"
+    },
+    {
+      "source": "/services/database-solutions",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fservices%2Fdatabase-solutions"
+    },
+    {
+      "source": "/solutions",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fsolutions"
+    },
+    {
+      "source": "/industries",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Findustries"
+    },
+    {
+      "source": "/work",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fwork"
+    },
+    {
+      "source": "/work/ssezi-returns",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fwork%2Fssezi-returns"
+    },
+    {
+      "source": "/work/pratik-wellness",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fwork%2Fpratik-wellness"
+    },
+    {
+      "source": "/process",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fprocess"
+    },
+    {
+      "source": "/technologies",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Ftechnologies"
+    },
+    {
+      "source": "/insights",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Finsights"
+    },
+    {
+      "source": "/insights/building-technology-around-business-processes",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Finsights%2Fbuilding-technology-around-business-processes"
+    },
+    {
+      "source": "/insights/what-makes-an-api-reliable",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Finsights%2Fwhat-makes-an-api-reliable"
+    },
+    {
+      "source": "/insights/when-dashboards-drive-better-decisions",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Finsights%2Fwhen-dashboards-drive-better-decisions"
+    },
+    {
+      "source": "/about",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fabout"
+    },
+    {
+      "source": "/contact",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fcontact"
+    },
+    {
+      "source": "/faq",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Ffaq"
+    },
+    {
+      "source": "/website-development-company-in-vasai",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fwebsite-development-company-in-vasai"
+    },
+    {
+      "source": "/privacy",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fprivacy"
+    },
+    {
+      "source": "/terms",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/markdown.*" }],
+      "destination": "/api/markdown?path=%2Fterms"
+    },
     { "source": "/assets/:path*", "destination": "/assets/:path*" },
     { "source": "/favicon:path*", "destination": "/favicon:path*" },
     { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
     { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/llms.txt", "destination": "/llms.txt" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [
@@ -62,6 +203,20 @@
       ]
     },
     {
+      "source": "/llms.txt",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    },
+    {
+      "source": "/api/contact.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    },
+    {
       "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
@@ -70,7 +225,11 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" }
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" },
+        {
+          "key": "Link",
+          "value": "<https://www.synergybrix.com/.well-known/api-catalog>; rel=\"api-catalog\", <https://www.synergybrix.com/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+        }
       ]
     }
   ]

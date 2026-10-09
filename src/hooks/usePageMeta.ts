@@ -12,6 +12,42 @@ export interface PageMetaOptions {
   jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>
 }
 
+function buildPageJsonLd(title: string, canonical: string): Record<string, unknown> {
+  const path = canonical.startsWith(SITE_URL) ? canonical.slice(SITE_URL.length).split('?')[0] : ''
+  const segments = path.split('/').filter(Boolean)
+  const itemListElement: Record<string, unknown>[] = [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+  ]
+  let parentPath = ''
+
+  segments.forEach((segment, index) => {
+    parentPath += `/${segment}`
+    const name =
+      index === segments.length - 1
+        ? title.split('|')[0].trim()
+        : segment.replaceAll('-', ' ').replace(/\b\w/g, (character) => character.toUpperCase())
+    itemListElement.push({
+      '@type': 'ListItem',
+      position: index + 2,
+      name,
+      item: `${SITE_URL}${parentPath}`,
+    })
+  })
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'BreadcrumbList', itemListElement },
+      {
+        '@type': 'WebPage',
+        name: title,
+        url: canonical,
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+      },
+    ],
+  }
+}
+
 export function usePageMeta({
   title,
   description,
@@ -76,19 +112,14 @@ export function usePageMeta({
     // 6. Robots Tag
     setMetaTag('name', 'robots', robots)
 
-    // 7. Dynamic JSON-LD Structured Data
-    if (jsonLd) {
-      let scriptTag = document.querySelector('script[data-page-jsonld="true"]')
-      if (!scriptTag) {
-        scriptTag = document.createElement('script')
-        scriptTag.setAttribute('type', 'application/ld+json')
-        scriptTag.setAttribute('data-page-jsonld', 'true')
-        document.head.appendChild(scriptTag)
-      }
-      scriptTag.textContent = JSON.stringify(jsonLd)
-    } else {
-      const existingScript = document.querySelector('script[data-page-jsonld="true"]')
-      if (existingScript) existingScript.remove()
+    // 7. Keep a page-specific schema on client-side navigation.
+    let scriptTag = document.querySelector('script[data-page-jsonld="true"]')
+    if (!scriptTag) {
+      scriptTag = document.createElement('script')
+      scriptTag.setAttribute('type', 'application/ld+json')
+      scriptTag.setAttribute('data-page-jsonld', 'true')
+      document.head.appendChild(scriptTag)
     }
+    scriptTag.textContent = JSON.stringify(jsonLd ?? buildPageJsonLd(title, canonical))
   }, [title, description, canonical, robots, ogType, ogImage, twitterCard, jsonLd])
 }
