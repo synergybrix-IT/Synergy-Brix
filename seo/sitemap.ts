@@ -1,14 +1,7 @@
 import { getAllRoutesMeta, type RouteMeta } from './routesMeta.ts'
 import { resolveSiteUrl, SITE_URL } from './siteUrl.ts'
 
-export type SitemapChangeFrequency = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never'
-
-export type SitemapEntry = {
-  path: string
-  changeFrequency: SitemapChangeFrequency
-  priority: number
-  lastmod?: string
-}
+export type SitemapEntry = Pick<RouteMeta, 'canonical'>
 
 export function getSitemapBaseUrl(): string {
   return resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL ?? process.env.VITE_SITE_URL ?? SITE_URL)
@@ -22,15 +15,11 @@ export function getSitemapEntries(): SitemapEntry[] {
     .filter((route) => {
       // Exclude any noindex or non-public routes
       if (route.robots.includes('noindex') || route.path === '/404') return false
-      if (seen.has(route.path)) return false
-      seen.add(route.path)
+      if (seen.has(route.canonical)) return false
+      seen.add(route.canonical)
       return true
     })
-    .map((route: RouteMeta) => ({
-      path: route.path,
-      changeFrequency: route.changeFrequency,
-      priority: route.priority,
-    }))
+    .map((route: RouteMeta) => ({ canonical: route.canonical }))
 }
 
 function escapeXml(value: string): string {
@@ -42,19 +31,13 @@ function escapeXml(value: string): string {
     .replaceAll("'", '&apos;')
 }
 
-export function buildSitemapXml(lastModified = new Date()): string {
-  const baseUrl = getSitemapBaseUrl()
-  const lastmod = lastModified.toISOString().split('T')[0]
+export function buildSitemapXml(): string {
   const entries = getSitemapEntries()
 
   const urls = entries
     .map((entry) => {
-      const loc = entry.path === '/' ? `${baseUrl}/` : `${baseUrl}${entry.path}`
       return `  <url>
-    <loc>${escapeXml(loc)}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>${entry.changeFrequency}</changefreq>
-    <priority>${entry.priority.toFixed(1)}</priority>
+    <loc>${escapeXml(entry.canonical)}</loc>
   </url>`
     })
     .join('\n')
