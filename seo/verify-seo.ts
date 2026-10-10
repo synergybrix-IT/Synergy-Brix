@@ -143,6 +143,9 @@ if (existsSync(sitemapPath)) {
   if (sitemapUrls.some((url) => !url.startsWith('https://www.synergybrix.com/'))) {
     sitemapErrors.push('contains a URL outside the canonical production origin')
   }
+  if (/<(?:lastmod|changefreq|priority)>/i.test(sitemapContent)) {
+    sitemapErrors.push('contains unsupported or unverified sitemap hints')
+  }
   if (sitemapUrls.some((url) => !expectedUrls.includes(url))) sitemapErrors.push('contains a noncanonical or noindex URL')
   if (expectedUrls.some((url) => !sitemapSet.has(url))) sitemapErrors.push('is missing an indexable route')
   if (sitemapErrors.length) {
