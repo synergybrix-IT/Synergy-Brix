@@ -360,14 +360,17 @@ function buildTechnologies(): string {
 }
 
 function buildInsights(): string {
-  const posts = [
-    { title: 'Building technology around business processes', href: '/insights/building-technology-around-business-processes', excerpt: 'Successful software starts with a clear understanding of how work actually happens inside an organization.' },
-    { title: 'What makes an API reliable', href: '/insights/what-makes-an-api-reliable', excerpt: 'Reliable APIs are not just technically sound—they are predictable, secure, and easy to integrate over time.' },
-    { title: 'When dashboards drive better decisions', href: '/insights/when-dashboards-drive-better-decisions', excerpt: 'A good dashboard does not overwhelm teams—it highlights the right signals and supports practical action.' },
-  ]
-  const list = posts.map((p) => `<article><h3><a href="${p.href}">${esc(p.title)}</a></h3><p>${esc(p.excerpt)}</p></article>`).join('')
+  const visiblePosts = blogPosts.filter(
+    (post) => post.slug === 'how-vasai-virar-businesses-can-get-more-customers-online',
+  )
+  const list = visiblePosts.map((post) => {
+    const image = post.featuredImage
+      ? `<img src="${esc(post.featuredImage.src)}" alt="${esc(post.featuredImage.alt)}" width="${post.featuredImage.width}" height="${post.featuredImage.height}" loading="lazy">`
+      : ''
+    return `<article>${image}<p>${esc(post.category)} · ${esc(post.date)}</p><h2><a href="/insights/${esc(post.slug)}">${esc(post.title)}</a></h2><p>${esc(post.excerpt)}</p><a href="/insights/${esc(post.slug)}">Read article</a></article>`
+  }).join('')
   return [
-    `<h1>Software &amp; Technology Insights</h1>`,
+    `<h1>Practical Perspectives</h1>`,
     `<p>Explore practical articles on business software, automation, API design, and better technology decisions.</p>`,
     list,
   ].join('')
@@ -377,7 +380,20 @@ function buildInsightDetail(path: string): string {
   const slug = path.replace('/insights/', '')
   const post = blogPosts.find((item) => item.slug === slug)
   if (!post) return `<h1>Insight</h1>`
-  const paras = post.content.map((p) => `<p>${esc(p)}</p>`).join('')
+  const imageMarkup = (image: NonNullable<typeof post.featuredImage>, loading: 'eager' | 'lazy' = 'lazy') =>
+    `<figure><img src="${esc(image.src)}" alt="${esc(image.alt)}" width="${image.width}" height="${image.height}" loading="${loading}">${image.caption ? `<figcaption>${esc(image.caption)}</figcaption>` : ''}</figure>`
+  const intro = post.content.map((paragraph) => `<p>${esc(paragraph)}</p>`).join('')
+  const sections = post.sections?.map((section) => {
+    const paragraphs = section.paragraphs.map((paragraph) => `<p>${esc(paragraph)}</p>`).join('')
+    const bullets = section.bullets?.length
+      ? `<ul>${section.bullets.map((bullet) => `<li>${esc(bullet)}</li>`).join('')}</ul>`
+      : ''
+    const image = section.image ? imageMarkup(section.image) : ''
+    const links = section.links?.length
+      ? `<p>${section.links.map((link) => `<a href="${esc(link.href)}">${esc(link.label)}</a>`).join(' | ')}</p>`
+      : ''
+    return `<section><h2>${esc(section.heading)}</h2>${paragraphs}${bullets}${image}${links}</section>`
+  }).join('') ?? ''
   const references = post.references?.length
     ? `<section><h2>Further reading</h2><ul>${post.references
         .map((reference) => `<li><a href="${esc(reference.url)}">${esc(reference.title)}</a></li>`)
@@ -389,8 +405,11 @@ function buildInsightDetail(path: string): string {
   return [
     `<nav aria-label="Breadcrumb"><a href="/">Home</a> &gt; <a href="/insights">Insights</a> &gt; ${esc(post.title)}</nav>`,
     `<h1>${esc(post.title)}</h1>`,
+    `<p><time datetime="${esc(post.publishedAt ?? '')}">${esc(post.date)}</time> · ${esc(post.readTime)} · ${esc(post.category)}</p>`,
+    post.featuredImage ? imageMarkup(post.featuredImage, 'eager') : '',
     `<p>By <a href="/about">Synergy Brix</a></p>`,
-    paras,
+    intro,
+    sections,
     references,
     related,
     `<p><a href="/insights">Back to all insights</a></p>`,
