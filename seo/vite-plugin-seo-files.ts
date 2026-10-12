@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import type { Plugin, PreviewServer, ViteDevServer } from 'vite'
-import { prerenderAllRoutes } from './prerender.ts'
-import { buildRobotsTxt, buildSitemapXml } from './sitemap.ts'
+import { prerenderAllRoutes } from './prerender.js'
+import { buildRobotsTxt, buildSitemapXml } from './sitemap.js'
 
 function attachSeoRoutes(server: ViteDevServer | PreviewServer) {
   server.middlewares.use((req, res, next) => {

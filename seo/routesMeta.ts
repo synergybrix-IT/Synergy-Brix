@@ -1,6 +1,6 @@
-import { SITE_URL } from './siteUrl.ts'
-import { faqs, vasaiFaqs } from '../src/data/siteData.ts'
-import { ORGANIZATION_SCHEMA, WEBSITE_SCHEMA } from '../src/data/siteStructuredData.ts'
+import { SITE_URL } from './siteUrl.js'
+import { faqs, vasaiFaqs } from '../src/data/siteData.js'
+import { ORGANIZATION_SCHEMA, WEBSITE_SCHEMA } from '../src/data/siteStructuredData.js'
 
 export interface RouteMeta {
   path: string

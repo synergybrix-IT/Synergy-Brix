@@ -1,5 +1,5 @@
-import { getAllRoutesMeta, type RouteMeta } from './routesMeta.ts'
-import { resolveSiteUrl, SITE_URL } from './siteUrl.ts'
+import { getAllRoutesMeta, type RouteMeta } from './routesMeta.js'
+import { resolveSiteUrl, SITE_URL } from './siteUrl.js'
 
 export type SitemapEntry = Pick<RouteMeta, 'canonical'>
 

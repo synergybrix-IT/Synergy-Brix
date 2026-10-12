@@ -1,4 +1,4 @@
-import { SITE_URL } from './siteUrl.ts'
+import { SITE_URL } from './siteUrl.js'
 
 export const API_CATALOG_URL = `${SITE_URL}/.well-known/api-catalog`
 export const API_CATALOG_LINK = `<${API_CATALOG_URL}>; rel="api-catalog"`

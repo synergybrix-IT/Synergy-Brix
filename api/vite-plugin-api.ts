@@ -3,7 +3,7 @@ import apiCatalog from './api-catalog.js'
 import contact from './contact.js'
 import markdown from './markdown.js'
 import projectInquiry from './project-inquiry.js'
-import { API_CATALOG_LINK } from '../seo/apiCatalog.ts'
+import { API_CATALOG_LINK } from '../seo/apiCatalog.js'
 
 export function apiDevPlugin(): Plugin {
   const handlers: Record<string, (request: Request) => Promise<Response> | Response> = {

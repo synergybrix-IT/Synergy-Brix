@@ -1,8 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
-import { getAllRoutesMeta, getNotFoundRouteMeta, type RouteMeta } from './routesMeta.ts'
-import { buildRobotsTxt, buildSitemapXml } from './sitemap.ts'
-import { buildSeoBody } from './seoBodyContent.ts'
+import { getAllRoutesMeta, getNotFoundRouteMeta, type RouteMeta } from './routesMeta.js'
+import { buildRobotsTxt, buildSitemapXml } from './sitemap.js'
+import { buildSeoBody } from './seoBodyContent.js'
 
 function escapeAttr(str: string): string {
   return str

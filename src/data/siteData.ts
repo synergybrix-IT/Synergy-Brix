@@ -1,4 +1,4 @@
-import { SITE_URL } from '../config/siteUrl.ts'
+import { SITE_URL } from '../config/siteUrl.js'
 
 export type NavItem = {
   label: string
