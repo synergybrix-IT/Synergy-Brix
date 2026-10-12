@@ -5,6 +5,7 @@ export interface PageMetaOptions {
   title: string
   description: string
   canonical: string
+  ogTitle?: string
   robots?: string
   ogType?: 'website' | 'article'
   ogImage?: string
@@ -52,6 +53,7 @@ export function usePageMeta({
   title,
   description,
   canonical,
+  ogTitle = title,
   robots = 'index, follow',
   ogType = 'website',
   ogImage = `${SITE_URL}/logo.png`,
@@ -96,7 +98,7 @@ export function usePageMeta({
     }
 
     // 4. Open Graph Tags
-    setMetaTag('property', 'og:title', title)
+    setMetaTag('property', 'og:title', ogTitle)
     setMetaTag('property', 'og:description', description)
     setMetaTag('property', 'og:url', canonical)
     setMetaTag('property', 'og:type', ogType)
@@ -105,7 +107,7 @@ export function usePageMeta({
 
     // 5. Twitter Card Tags
     setMetaTag('name', 'twitter:card', twitterCard)
-    setMetaTag('name', 'twitter:title', title)
+    setMetaTag('name', 'twitter:title', ogTitle)
     setMetaTag('name', 'twitter:description', description)
     setMetaTag('name', 'twitter:image', ogImage)
 
@@ -121,5 +123,5 @@ export function usePageMeta({
       document.head.appendChild(scriptTag)
     }
     scriptTag.textContent = JSON.stringify(jsonLd ?? buildPageJsonLd(title, canonical))
-  }, [title, description, canonical, robots, ogType, ogImage, twitterCard, jsonLd])
+  }, [title, description, canonical, ogTitle, robots, ogType, ogImage, twitterCard, jsonLd])
 }

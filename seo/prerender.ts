@@ -52,7 +52,7 @@ export function generatePrerenderedHtml(templateHtml: string, route: RouteMeta):
   }
 
   // 4. Open Graph Tags
-  replaceOrInjectMeta('property', 'og:title', route.title)
+  replaceOrInjectMeta('property', 'og:title', route.ogTitle ?? route.title)
   replaceOrInjectMeta('property', 'og:description', route.description)
   replaceOrInjectMeta('property', 'og:type', route.ogType)
   replaceOrInjectMeta('property', 'og:url', route.canonical)
@@ -61,7 +61,7 @@ export function generatePrerenderedHtml(templateHtml: string, route: RouteMeta):
 
   // 5. Twitter Card Tags
   replaceOrInjectMeta('name', 'twitter:card', route.twitterCard)
-  replaceOrInjectMeta('name', 'twitter:title', route.title)
+  replaceOrInjectMeta('name', 'twitter:title', route.ogTitle ?? route.title)
   replaceOrInjectMeta('name', 'twitter:description', route.description)
   replaceOrInjectMeta('name', 'twitter:image', route.ogImage)
 

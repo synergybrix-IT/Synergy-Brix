@@ -6,6 +6,7 @@ export interface RouteMeta {
   path: string
   canonical: string
   title: string
+  ogTitle?: string
   description: string
   ogType: 'website' | 'article'
   ogImage: string
@@ -646,7 +647,51 @@ export function getAllRoutesMeta(): RouteMeta[] {
       },
     },
 
-    // 21. About
+    // 21. Insight: How Vasai-Virar Businesses Can Get More Customers Online
+    {
+      path: '/insights/how-vasai-virar-businesses-can-get-more-customers-online',
+      canonical: `${SITE_URL}/insights/how-vasai-virar-businesses-can-get-more-customers-online`,
+      title: 'How Vasai-Virar Businesses Can Get More Customers Online',
+      ogTitle: 'How Vasai-Virar Businesses Can Get More Customers Online: A Practical Guide',
+      description:
+        'Discover practical ways for Vasai-Virar businesses to improve local visibility, build a useful website, earn customer trust and generate enquiries online.',
+      ogType: 'article',
+      ogImage: `${SITE_URL}/images/vasai-virar-businesses-online-guide.webp`,
+      twitterCard: 'summary_large_image',
+      robots: 'index, follow',
+      changeFrequency: 'monthly',
+      priority: 0.7,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@graph': [
+          ORGANIZATION_SCHEMA,
+          WEBSITE_SCHEMA,
+          makeBreadcrumbs([
+            { name: 'Home', path: '/' },
+            { name: 'Insights', path: '/insights' },
+            { name: 'How Vasai-Virar Businesses Can Get More Customers Online: A Practical Guide' },
+          ]),
+          {
+            '@type': 'BlogPosting',
+            headline: 'How Vasai-Virar Businesses Can Get More Customers Online: A Practical Guide',
+            description:
+              'Discover practical ways for Vasai-Virar businesses to improve local visibility, build a useful website, earn customer trust and generate enquiries online.',
+            image: `${SITE_URL}/images/vasai-virar-businesses-online-guide.webp`,
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': `${SITE_URL}/insights/how-vasai-virar-businesses-can-get-more-customers-online`,
+            },
+            datePublished: '2026-10-12',
+            dateModified: '2026-10-12',
+            author: { '@id': `${SITE_URL}/#organization` },
+            publisher: { '@id': `${SITE_URL}/#organization` },
+            url: `${SITE_URL}/insights/how-vasai-virar-businesses-can-get-more-customers-online`,
+          },
+        ],
+      },
+    },
+
+    // 22. About
     {
       path: '/about',
       canonical: `${SITE_URL}/about`,

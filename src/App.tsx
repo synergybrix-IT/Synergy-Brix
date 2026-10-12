@@ -42,7 +42,7 @@ import {
   solutions,
 } from './data/siteData'
 import { SITE_URL } from './config/siteUrl'
-import { HOME_JSON_LD } from './data/siteStructuredData'
+import { HOME_JSON_LD, ORGANIZATION_SCHEMA, WEBSITE_SCHEMA } from './data/siteStructuredData'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { Analytics } from '@vercel/analytics/react'
 import { usePageMeta } from './hooks/usePageMeta'
@@ -2037,6 +2037,9 @@ function TechnologiesPage() {
 
 function InsightsPage() {
   usePageMeta(pageMeta.insights)
+  const visiblePosts = blogPosts.filter(
+    (post) => post.slug === 'how-vasai-virar-businesses-can-get-more-customers-online',
+  )
   return (
     <div className="bg-ink-950">
       <PageHero
@@ -2049,7 +2052,7 @@ function InsightsPage() {
       />
       <Container className="pb-24 lg:pb-32">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {blogPosts.map((post, i) => (
+          {visiblePosts.map((post, i) => (
             <BlogCard key={post.slug} post={post} index={i} />
           ))}
         </div>
@@ -2062,15 +2065,19 @@ function InsightDetailPage() {
   const { slug } = useParams()
   const post = blogPosts.find((item) => item.slug === slug)
   usePageMeta({
-    title: post ? `${post.title} | Synergy Brix Insights` : 'Page Not Found | Synergy Brix',
+    title: post ? post.seoTitle ?? `${post.title} | Synergy Brix Insights` : 'Page Not Found | Synergy Brix',
     description: post ? post.excerpt : 'The insight you are looking for could not be found.',
     canonical: post ? `${SITE_URL}/insights/${post.slug}` : `${SITE_URL}/404`,
+    ogTitle: post?.title,
     robots: post ? 'index, follow' : 'noindex, nofollow',
     ogType: 'article',
+    ogImage: post?.featuredImage ? `${SITE_URL}${post.featuredImage.src}` : undefined,
     jsonLd: post
       ? {
           '@context': 'https://schema.org',
           '@graph': [
+            ORGANIZATION_SCHEMA,
+            WEBSITE_SCHEMA,
             {
               '@type': 'BreadcrumbList',
               itemListElement: [
@@ -2083,9 +2090,14 @@ function InsightDetailPage() {
               '@type': 'BlogPosting',
               headline: post.title,
               description: post.excerpt,
+              ...(post.featuredImage ? { image: `${SITE_URL}${post.featuredImage.src}` } : {}),
               author: { '@id': `${SITE_URL}/#organization` },
               publisher: { '@id': `${SITE_URL}/#organization` },
-              mainEntityOfPage: `${SITE_URL}/insights/${post.slug}`,
+              ...(post.publishedAt ? { datePublished: post.publishedAt, dateModified: post.publishedAt } : {}),
+              mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': `${SITE_URL}/insights/${post.slug}`,
+              },
               url: `${SITE_URL}/insights/${post.slug}`,
             },
           ],
@@ -2093,6 +2105,7 @@ function InsightDetailPage() {
       : undefined,
   })
   if (!post) return <NotFoundPage />
+  const isVasaiVirarGuide = post.slug === 'how-vasai-virar-businesses-can-get-more-customers-online'
   return (
     <div className="bg-ink-950">
       <PageHero
@@ -2100,17 +2113,91 @@ function InsightDetailPage() {
         title={post.title}
         subtitle={`${post.date} · ${post.readTime}`}
         breadcrumbs={[{ label: 'Insights', to: '/insights' }, { label: post.title }]}
+        className={isVasaiVirarGuide ? 'insight-guide-hero' : undefined}
+        titleClassName={isVasaiVirarGuide ? 'insight-guide-hero__title' : undefined}
       />
       <Container className="pb-24 lg:pb-32">
-        <article className="mx-auto max-w-3xl glass-panel rounded-3xl p-8 sm:p-12">
-          <div className="space-y-6 text-sm leading-8 text-slate-300 sm:text-lg sm:leading-9">
+        <article
+          className={
+            isVasaiVirarGuide
+              ? 'insight-article mx-auto w-full glass-panel rounded-3xl'
+              : 'mx-auto max-w-3xl glass-panel rounded-3xl p-8 sm:p-12'
+          }
+        >
+          {isVasaiVirarGuide && (
+            <p className="insight-article__byline font-mono text-xs uppercase tracking-[0.16em] text-emerald-300/80">
+              By <Link to="/about" className="hover:text-emerald-200">Synergy Brix</Link>
+            </p>
+          )}
+          {post.featuredImage && (
+            <figure className={isVasaiVirarGuide ? 'insight-article__featured' : 'mb-8'}>
+              <img
+                src={post.featuredImage.src}
+                alt={post.featuredImage.alt}
+                width={post.featuredImage.width}
+                height={post.featuredImage.height}
+                fetchPriority="high"
+                className={isVasaiVirarGuide ? '' : 'aspect-video w-full rounded-2xl object-cover'}
+              />
+              {post.featuredImage.caption && (
+                <figcaption className="mt-3 text-xs leading-5 text-slate-500">{post.featuredImage.caption}</figcaption>
+              )}
+            </figure>
+          )}
+          {!isVasaiVirarGuide && (
             <p className="font-mono text-xs uppercase tracking-[0.16em] text-emerald-300/80">
               By <Link to="/about" className="hover:text-emerald-200">Synergy Brix</Link>
             </p>
-            {post.content.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+          )}
+          <div className={isVasaiVirarGuide ? 'insight-article__intro' : 'space-y-6 text-sm leading-8 text-slate-300 sm:text-lg sm:leading-9'}>
+            {post.content.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </div>
+          {post.sections?.map((section) => (
+            <section
+              key={section.heading}
+              className={`mt-12 border-t border-white/10 pt-8${isVasaiVirarGuide ? ' insight-article__section' : ''}`}
+            >
+              <div className={isVasaiVirarGuide ? 'insight-article__section-copy' : ''}>
+                <h2 className="text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">{section.heading}</h2>
+                <div className="mt-5 space-y-5 text-sm leading-8 text-slate-300 sm:text-base">
+                  {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                </div>
+                {section.bullets && (
+                  <ul className="mt-5 list-disc space-y-3 pl-6 text-sm leading-7 text-slate-300 sm:text-base">
+                    {section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
+                  </ul>
+                )}
+                {section.links && (
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    {section.links.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        className="inline-flex items-center rounded-full border border-emerald-400/25 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-200 transition hover:bg-emerald-500/20"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {section.image && (
+                <figure className={`mt-7${isVasaiVirarGuide ? ' insight-article__section-image' : ''}`}>
+                  <img
+                    src={section.image.src}
+                    alt={section.image.alt}
+                    width={section.image.width}
+                    height={section.image.height}
+                    loading="lazy"
+                    className="max-h-[30rem] w-full rounded-2xl object-cover"
+                  />
+                  {section.image.caption && (
+                    <figcaption className="mt-3 text-xs leading-5 text-slate-500">{section.image.caption}</figcaption>
+                  )}
+                </figure>
+              )}
+            </section>
+          ))}
           {post.references && post.references.length > 0 && (
             <section className="mt-10 border-t border-white/10 pt-8">
               <h2 className="text-sm font-semibold text-white">Further reading</h2>
@@ -2472,15 +2559,19 @@ function PageHero({
   subtitle,
   description,
   breadcrumbs,
+  className = '',
+  titleClassName = '',
 }: {
   eyebrow: string
   title: React.ReactNode
   subtitle?: string
   description?: string
   breadcrumbs?: { label: string; to?: string }[]
+  className?: string
+  titleClassName?: string
 }) {
   return (
-    <section className="surface-canvas relative overflow-hidden pt-32 pb-14 lg:pt-44 lg:pb-20">
+    <section className={`surface-canvas relative overflow-hidden pt-32 pb-14 lg:pt-44 lg:pb-20 ${className}`}>
       <div className="mesh-bg absolute inset-0" />
       <div className="pointer-events-none absolute -right-32 top-20 h-72 w-72 rounded-full bg-emerald-500/12 blur-[120px]" />
       <Container className="relative">
@@ -2502,7 +2593,7 @@ function PageHero({
         )}
         <div className="max-w-4xl">
           <div className="eyebrow">{eyebrow}</div>
-          <h1 className="mt-5 text-[clamp(2.4rem,5vw,4.5rem)] font-semibold leading-[1.0] tracking-tightest text-white">
+          <h1 className={`mt-5 text-[clamp(2.4rem,5vw,4.5rem)] font-semibold leading-[1.0] tracking-tightest text-white ${titleClassName}`}>
             {title}
           </h1>
           {subtitle && <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200 sm:text-xl">{subtitle}</p>}
@@ -2649,6 +2740,16 @@ function BlogCard({ post, index = 0 }: { post: (typeof blogPosts)[number]; index
         data-cursor-label="Read"
         className="card-lift group relative-sweep relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/3 p-6"
       >
+        {post.featuredImage && (
+          <img
+            src={post.featuredImage.src}
+            alt={post.featuredImage.alt}
+            width={post.featuredImage.width}
+            height={post.featuredImage.height}
+            loading="lazy"
+            className="-mx-6 -mt-6 mb-6 aspect-video w-[calc(100%+3rem)] object-cover"
+          />
+        )}
         <div className="flex items-center justify-between">
           <span className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-emerald-300/80">{post.category}</span>
           <span className="font-mono text-[0.65rem] text-slate-500">{post.readTime}</span>
